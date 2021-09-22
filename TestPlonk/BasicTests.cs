@@ -65,18 +65,5 @@ namespace TestPlonk
             result.wasSuccessful.Should().Be(true);
         }
 
-        [Fact]
-        public void can_change_working_directory()
-        {
-            var fileSystem = new FileSystem(PathType.Absolute, @"C:\temp");
-            fileSystem.WorkingDirectory.Should().Be(@"C:\temp");
-        }
-
-        [Fact]
-        public void can_use_relative_working_directory()
-        {
-            var fileSystem = new FileSystem(PathType.Relative, @"temp");
-            fileSystem.WorkingDirectory.Should().Be(Path.Join(Directory.GetCurrentDirectory(), "temp"));
-        }
     }
 }

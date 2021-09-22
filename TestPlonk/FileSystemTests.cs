@@ -26,5 +26,12 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Relative, @"temp");
             fileSystem.WorkingDirectory.Should().Be(Path.Join(Directory.GetCurrentDirectory(), "temp"));
         }
+
+        [Fact]
+        public void can_start_at_working_directory()
+        {
+            var fileSystem = new FileManager(PathType.Relative);
+            fileSystem.WorkingDirectory.Should().Be(Directory.GetCurrentDirectory());
+        }
     }
 }

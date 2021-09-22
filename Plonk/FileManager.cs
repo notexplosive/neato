@@ -15,6 +15,18 @@ namespace Plonk
 
     public class FileManager
     {
+        public FileManager(PathType pathType)
+        {
+            if (pathType == PathType.Relative)
+            {
+                WorkingDirectory = Directory.GetCurrentDirectory();
+            }
+            else
+            {
+                WorkingDirectory = Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+            }
+        }
+
         public FileManager(PathType pathType, string workingDirectory)
         {
             if (pathType == PathType.Relative)
