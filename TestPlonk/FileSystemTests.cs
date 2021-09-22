@@ -33,5 +33,23 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Relative);
             fileSystem.WorkingDirectory.Should().Be(Directory.GetCurrentDirectory());
         }
+
+        [Fact]
+        public void can_create_directories()
+        {
+            var fileSystem = new FileManager(PathType.Relative);
+            var testPathRelative = "test-empty-directory";
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            try { Directory.Delete(testPathFull); }
+            catch { }
+            var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            fileSystem.MakeDirectory(testPathRelative);
+            var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
+
+            lsResultsBefore.Should().NotContain(testPathFull);
+            lsResultsAfter.Should().Contain(testPathFull);
+
+            Directory.Delete(testPathFull);
+        }
     }
 }
