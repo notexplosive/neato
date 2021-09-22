@@ -27,5 +27,32 @@ namespace TestPlonk
             result.stdOutput.Should().Be("");
             result.wasSuccessful.Should().Be(false);
         }
+
+        [Fact]
+        public void dotnet_is_installed()
+        {
+            var program = new DotnetProgram();
+            var result = program.RunWithArgs("--info");
+
+            result.wasSuccessful.Should().Be(true);
+        }
+
+        [Fact]
+        public void git_is_installed()
+        {
+            var program = new GitProgram();
+            var result = program.RunWithArgs("status");
+
+            result.wasSuccessful.Should().Be(true);
+        }
+
+        [Fact]
+        public void sevenzip_is_installed()
+        {
+            var program = new SevenZipProgram();
+            var result = program.RunWithArgs();
+
+            result.wasSuccessful.Should().Be(true);
+        }
     }
 }
