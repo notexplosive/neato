@@ -41,9 +41,22 @@ namespace Plonk
 
         public string WorkingDirectory { get; set; }
 
+        private string RelativePath(string relativePath)
+        {
+            return Path.Join(WorkingDirectory, relativePath);
+        }
+
         public void MakeDirectory(string relativePath)
         {
-            Directory.CreateDirectory(Path.Join(WorkingDirectory, relativePath));
+            Directory.CreateDirectory(RelativePath(relativePath));
+        }
+
+        public void RemoveDirectory(PathType pathType, string path)
+        {
+            if (pathType == PathType.Relative)
+            {
+                Directory.Delete(RelativePath(path));
+            }
         }
     }
 }
