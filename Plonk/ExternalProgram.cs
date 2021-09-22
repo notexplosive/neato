@@ -4,6 +4,18 @@ using System.IO;
 
 namespace Plonk
 {
+    public class ProgramOutput
+    {
+        public readonly string stdOutput;
+        public readonly bool wasSuccessful;
+
+        public ProgramOutput(bool wasSuccessful, string output)
+        {
+            this.stdOutput = output;
+            this.wasSuccessful = wasSuccessful;
+        }
+    }
+
     public class ExternalProgram
     {
         private readonly string runPath;
@@ -13,9 +25,10 @@ namespace Plonk
             this.runPath = runPath;
         }
 
-        public string RunWithArgs(params string[] argumentList)
+        public ProgramOutput RunWithArgs(params string[] argumentList)
         {
-            string output = string.Empty;
+            var stdOutput = string.Empty;
+            var wasSuccessful = true;
             using (Process process = new Process())
             {
                 process.StartInfo.FileName = runPath;
@@ -25,14 +38,20 @@ namespace Plonk
                 {
                     process.StartInfo.ArgumentList.Add(argument);
                 }
-                process.Start();
 
-                StreamReader reader = process.StandardOutput;
-                output = reader.ReadToEnd();
-
-                process.WaitForExit();
+                try
+                {
+                    process.Start();
+                    StreamReader reader = process.StandardOutput;
+                    stdOutput = reader.ReadToEnd();
+                    process.WaitForExit();
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    wasSuccessful = false;
+                }
             }
-            return output;
+            return new ProgramOutput(wasSuccessful, stdOutput);
         }
     }
 }
