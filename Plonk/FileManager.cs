@@ -41,33 +41,26 @@ namespace Plonk
 
         public string WorkingDirectory { get; set; }
 
-        private string RelativePath(string relativePath)
+        private string CalculatePath(PathType pathType, string path)
         {
-            return Path.Join(WorkingDirectory, relativePath);
+            if (pathType == PathType.Relative)
+            {
+                return Path.Join(WorkingDirectory, path);
+            }
+            else
+            {
+                return path;
+            }
         }
 
         public void MakeDirectory(PathType pathType, string path)
         {
-            if (pathType == PathType.Relative)
-            {
-                Directory.CreateDirectory(RelativePath(path));
-            }
-            else
-            {
-                Directory.CreateDirectory(path);
-            }
+            Directory.CreateDirectory(CalculatePath(pathType, path));
         }
 
         public void RemoveDirectory(PathType pathType, string path)
         {
-            if (pathType == PathType.Relative)
-            {
-                Directory.Delete(RelativePath(path));
-            }
-            else
-            {
-                Directory.Delete(path);
-            }
+            Directory.Delete(CalculatePath(pathType, path));
         }
     }
 }
