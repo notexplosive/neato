@@ -21,8 +21,6 @@ namespace TestPlonk
         [Fact]
         public void fails_to_call_programs_that_do_not_exist()
         {
-            // Intentionally call `ping` with bad args so we get an easy to expect result
-
             var program = new ExternalProgram("fjbnlazb");
             var result = program.RunWithArgs();
 
