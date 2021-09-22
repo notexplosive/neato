@@ -67,5 +67,11 @@ namespace Plonk
         {
             Directory.Delete(CalculatePath(pathType, path), true);
         }
+
+        public void CreateFile(PathType pathType, string path)
+        {
+            var file = File.Create(CalculatePath(pathType, path));
+            file.Close();
+        }
     }
 }

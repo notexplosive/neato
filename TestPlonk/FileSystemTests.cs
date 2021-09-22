@@ -118,5 +118,21 @@ namespace TestPlonk
             existsBefore.Should().BeTrue();
             existsAfter.Should().BeFalse();
         }
+
+        [Fact]
+        public void can_create_file_relative()
+        {
+            var testPathRelative = Guid.NewGuid().ToString();
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            Directory.CreateDirectory(testPathFull);
+            var fileSystem = new FileManager(PathType.Relative, testPathRelative);
+
+            var existsBefore = File.Exists(Path.Join(testPathFull, "a.test"));
+            fileSystem.CreateFile(PathType.Relative, "a.test");
+            var existsAfter = File.Exists(Path.Join(testPathFull, "a.test"));
+
+            existsBefore.Should().BeFalse();
+            existsAfter.Should().BeTrue();
+        }
     }
 }
