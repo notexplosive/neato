@@ -62,5 +62,10 @@ namespace Plonk
         {
             Directory.Delete(CalculatePath(pathType, path));
         }
+
+        public void RemoveDirectoryRecursive(PathType pathType, string path)
+        {
+            Directory.Delete(CalculatePath(pathType, path), true);
+        }
     }
 }

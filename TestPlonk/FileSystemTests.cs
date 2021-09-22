@@ -101,5 +101,22 @@ namespace TestPlonk
             existsBefore.Should().BeTrue();
             existsAfter.Should().BeFalse();
         }
+
+        [Fact]
+        public void can_recursively_remove_directories()
+        {
+            var testPathRelative = Guid.NewGuid().ToString();
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            Directory.CreateDirectory(testPathFull);
+            Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
+
+            var existsBefore = Directory.Exists(testPathFull);
+            var fileSystem = new FileManager(PathType.Relative);
+            fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
+            var existsAfter = Directory.Exists(testPathFull);
+
+            existsBefore.Should().BeTrue();
+            existsAfter.Should().BeFalse();
+        }
     }
 }
