@@ -67,5 +67,39 @@ namespace TestPlonk
             existsBefore.Should().BeTrue();
             existsAfter.Should().BeFalse();
         }
+
+        [Fact]
+        public void can_create_absolute_directories()
+        {
+            var fileSystem = new FileManager(PathType.Relative);
+            var testPathRelative = "test-empty-directory";
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            try { Directory.Delete(testPathFull); }
+            catch { }
+            var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            fileSystem.MakeDirectory(PathType.Absolute, testPathFull);
+            var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
+
+            lsResultsBefore.Should().NotContain(testPathFull);
+            lsResultsAfter.Should().Contain(testPathFull);
+
+            Directory.Delete(testPathFull);
+        }
+
+        [Fact]
+        public void can_remove_absolute_directories()
+        {
+            var testPathRelative = Guid.NewGuid().ToString();
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            var fileSystem = new FileManager(PathType.Relative);
+            Directory.CreateDirectory(testPathFull);
+
+            var existsBefore = Directory.Exists(testPathFull);
+            fileSystem.RemoveDirectory(PathType.Absolute, testPathFull);
+            var existsAfter = Directory.Exists(testPathFull);
+
+            existsBefore.Should().BeTrue();
+            existsAfter.Should().BeFalse();
+        }
     }
 }
