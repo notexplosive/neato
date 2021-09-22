@@ -54,5 +54,14 @@ namespace TestPlonk
 
             result.wasSuccessful.Should().Be(true);
         }
+
+        [Fact]
+        public void butler_is_installed()
+        {
+            var program = new ButlerProgram();
+            var result = program.RunWithArgs("--version");
+
+            result.wasSuccessful.Should().Be(true);
+        }
     }
 }
