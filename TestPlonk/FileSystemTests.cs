@@ -16,14 +16,14 @@ namespace TestPlonk
         [Fact]
         public void can_change_working_directory()
         {
-            var fileSystem = new FileSystem(PathType.Absolute, @"C:\temp");
+            var fileSystem = new FileManager(PathType.Absolute, @"C:\temp");
             fileSystem.WorkingDirectory.Should().Be(@"C:\temp");
         }
 
         [Fact]
         public void can_use_relative_working_directory()
         {
-            var fileSystem = new FileSystem(PathType.Relative, @"temp");
+            var fileSystem = new FileManager(PathType.Relative, @"temp");
             fileSystem.WorkingDirectory.Should().Be(Path.Join(Directory.GetCurrentDirectory(), "temp"));
         }
     }

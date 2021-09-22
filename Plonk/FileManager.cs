@@ -13,9 +13,9 @@ namespace Plonk
         Relative
     }
 
-    public class FileSystem
+    public class FileManager
     {
-        public FileSystem(PathType pathType, string workingDirectory)
+        public FileManager(PathType pathType, string workingDirectory)
         {
             if (pathType == PathType.Relative)
             {
