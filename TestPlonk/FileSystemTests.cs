@@ -204,5 +204,48 @@ namespace TestPlonk
 
             fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
         }
+
+
+        /*
+        [Fact]
+        public void can_write_to_file_relative()
+        {
+        }
+        */
+
+        /*
+        [Fact]
+        public void can_write_to_file_absolute()
+        {
+        }
+        */
+
+        /*
+        [Fact]
+        public void can_copy_file_relative_to_relative()
+        {
+        }
+        */
+
+        /*
+        [Fact]
+        public void can_copy_file_relative_to_absolute()
+        {
+        }
+        */
+
+        /*
+        [Fact]
+        public void can_copy_file_absolute_to_relative()
+        {
+        }
+        */
+
+        /*
+        [Fact]
+        public void can_copy_file_absolute_to_absolute()
+        {
+        }
+        */
     }
 }
