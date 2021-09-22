@@ -53,6 +53,18 @@ namespace Plonk
             }
         }
 
+        private string CalculatePath(PathType pathType)
+        {
+            if (pathType == PathType.Relative)
+            {
+                return WorkingDirectory;
+            }
+            else
+            {
+                return Directory.GetDirectoryRoot(WorkingDirectory);
+            }
+        }
+
         public void MakeDirectory(PathType pathType, string path)
         {
             Directory.CreateDirectory(CalculatePath(pathType, path));
@@ -72,6 +84,28 @@ namespace Plonk
         {
             var file = File.Create(CalculatePath(pathType, path));
             file.Close();
+        }
+
+        public void RemoveFiles(PathType pathType, string pattern)
+        {
+            var files = Directory.EnumerateFiles(CalculatePath(pathType), pattern);
+            var failed = true;
+
+            while (failed)
+            {
+                failed = false;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch
+                    {
+                        failed = true;
+                    }
+                }
+            }
         }
     }
 }

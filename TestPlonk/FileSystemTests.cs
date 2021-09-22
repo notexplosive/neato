@@ -150,5 +150,32 @@ namespace TestPlonk
             existsBefore.Should().BeFalse();
             existsAfter.Should().BeTrue();
         }
+
+        [Fact]
+        public void can_remove_files_matching_wildcard_relative()
+        {
+            var testPathRelative = Guid.NewGuid().ToString();
+            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            Directory.CreateDirectory(testPathFull);
+            var fileSystem = new FileManager(PathType.Relative, testPathRelative);
+            fileSystem.CreateFile(PathType.Relative, "a.del");
+            fileSystem.CreateFile(PathType.Relative, "b.del");
+            fileSystem.CreateFile(PathType.Relative, "c.del");
+            fileSystem.CreateFile(PathType.Relative, "a.keep");
+            fileSystem.CreateFile(PathType.Relative, "b.keep");
+            Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
+
+            var filesBefore = Directory.GetFiles(testPathFull);
+            fileSystem.RemoveFiles(PathType.Relative, "*.del");
+            var filesAfter = Directory.GetFiles(testPathFull);
+
+            filesBefore.Should().HaveCount(5);
+            filesAfter.Should().HaveCount(2);
+            filesAfter.Should().Contain(Path.Join(testPathFull, "a.keep"), Path.Join(testPathFull, "b.keep"));
+            Directory.GetDirectories(testPathFull).Should().Contain(Path.Join(testPathFull, "temp"));
+            filesAfter.Should().NotContain(Path.Join(testPathFull, "a.del"), Path.Join(testPathFull, "b.del"), Path.Join(testPathFull, "c.del"));
+
+            fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
+        }
     }
 }
