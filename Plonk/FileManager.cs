@@ -53,18 +53,6 @@ namespace Plonk
             }
         }
 
-        private string CalculatePath(PathType pathType)
-        {
-            if (pathType == PathType.Relative)
-            {
-                return WorkingDirectory;
-            }
-            else
-            {
-                return Directory.GetDirectoryRoot(WorkingDirectory);
-            }
-        }
-
         public void MakeDirectory(PathType pathType, string path)
         {
             Directory.CreateDirectory(CalculatePath(pathType, path));
@@ -86,9 +74,9 @@ namespace Plonk
             file.Close();
         }
 
-        public void RemoveFiles(PathType pathType, string pattern)
+        public void RemoveFiles(PathType pathType, string path, string pattern)
         {
-            var files = Directory.EnumerateFiles(CalculatePath(pathType), pattern);
+            var files = Directory.EnumerateFiles(CalculatePath(pathType, path), pattern);
             var failed = true;
 
             while (failed)
