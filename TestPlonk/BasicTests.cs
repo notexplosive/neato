@@ -2,6 +2,7 @@ using Plonk;
 using System;
 using Xunit;
 using FluentAssertions;
+using System.IO;
 
 namespace TestPlonk
 {
@@ -67,8 +68,15 @@ namespace TestPlonk
         [Fact]
         public void can_change_working_directory()
         {
-            var fileSystem = new FileSystem(@"C:\temp");
+            var fileSystem = new FileSystem(PathType.Absolute, @"C:\temp");
             fileSystem.WorkingDirectory.Should().Be(@"C:\temp");
+        }
+
+        [Fact]
+        public void can_use_relative_working_directory()
+        {
+            var fileSystem = new FileSystem(PathType.Relative, @"temp");
+            fileSystem.WorkingDirectory.Should().Be(Path.Join(Directory.GetCurrentDirectory(), "temp"));
         }
     }
 }

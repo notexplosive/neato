@@ -7,11 +7,24 @@ using System.Threading.Tasks;
 
 namespace Plonk
 {
+    public enum PathType
+    {
+        Absolute,
+        Relative
+    }
+
     public class FileSystem
     {
-        public FileSystem(string workingDirectory = "")
+        public FileSystem(PathType pathType, string workingDirectory)
         {
-            WorkingDirectory = workingDirectory;
+            if (pathType == PathType.Relative)
+            {
+                WorkingDirectory = Path.Join(Directory.GetCurrentDirectory(), workingDirectory);
+            }
+            else
+            {
+                WorkingDirectory = workingDirectory;
+            }
         }
 
         public string WorkingDirectory { get; set; }
