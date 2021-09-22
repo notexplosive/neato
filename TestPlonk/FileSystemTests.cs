@@ -35,7 +35,7 @@ namespace TestPlonk
         }
 
         [Fact]
-        public void can_create_directories()
+        public void can_create_relative_directories()
         {
             var fileSystem = new FileManager(PathType.Relative);
             var testPathRelative = "test-empty-directory";
@@ -43,7 +43,7 @@ namespace TestPlonk
             try { Directory.Delete(testPathFull); }
             catch { }
             var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            fileSystem.MakeDirectory(testPathRelative);
+            fileSystem.MakeDirectory(PathType.Relative, testPathRelative);
             var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
 
             lsResultsBefore.Should().NotContain(testPathFull);

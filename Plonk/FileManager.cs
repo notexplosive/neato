@@ -46,9 +46,16 @@ namespace Plonk
             return Path.Join(WorkingDirectory, relativePath);
         }
 
-        public void MakeDirectory(string relativePath)
+        public void MakeDirectory(PathType pathType, string relativePath)
         {
-            Directory.CreateDirectory(RelativePath(relativePath));
+            if (pathType == PathType.Relative)
+            {
+                Directory.CreateDirectory(RelativePath(relativePath));
+            }
+            else
+            {
+
+            }
         }
 
         public void RemoveDirectory(PathType pathType, string path)
@@ -56,6 +63,10 @@ namespace Plonk
             if (pathType == PathType.Relative)
             {
                 Directory.Delete(RelativePath(path));
+            }
+            else
+            {
+
             }
         }
     }
