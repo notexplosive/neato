@@ -63,5 +63,12 @@ namespace TestPlonk
 
             result.wasSuccessful.Should().Be(true);
         }
+
+        [Fact]
+        public void can_change_working_directory()
+        {
+            var fileSystem = new FileSystem(@"C:\temp");
+            fileSystem.WorkingDirectory.Should().Be(@"C:\temp");
+        }
     }
 }
