@@ -22,7 +22,7 @@ namespace TestNeato
         }
 
         [Fact]
-        public void registered_command_runs_command()
+        public void registered_command_runs_command_no_args()
         {
             var parser = new CommandLineParser();
             bool wasFluffed = false;
