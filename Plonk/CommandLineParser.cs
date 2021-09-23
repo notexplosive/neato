@@ -7,16 +7,47 @@ using System.Threading.Tasks;
 
 namespace Neato
 {
+    public class TokenList
+    {
+        private readonly List<string> list;
+
+        public TokenList(string[] args)
+        {
+            this.list = new List<string>();
+            foreach (var arg in args)
+            {
+                this.list.Add(arg);
+            }
+        }
+
+        public string NextString()
+        {
+            var item = this.list[0];
+            this.list.RemoveAt(0);
+
+            return item;
+        }
+
+        public int NextInt()
+        {
+            var item = this.list[0];
+            this.list.RemoveAt(0);
+
+            return int.Parse(item);
+        }
+    }
+
     public class CommandLineParser
     {
         private readonly Dictionary<string, Command> registeredCommands = new Dictionary<string, Command>();
 
-        public bool Consume(string[] fullArgs)
+        public bool Consume(string[] argArray)
         {
-            var command = fullArgs[0];
-            if (registeredCommands.ContainsKey(fullArgs[0]))
+            var args = new TokenList(argArray);
+            var command = args.NextString();
+            if (registeredCommands.ContainsKey(command))
             {
-                registeredCommands[fullArgs[0]].Execute();
+                registeredCommands[command].Execute(args);
                 return true;
             }
             else
@@ -39,11 +70,11 @@ namespace Neato
         {
         }
 
-        public event Action Executed;
+        public event Action<TokenList> Executed;
 
-        public void Execute()
+        public void Execute(TokenList args)
         {
-            Executed?.Invoke();
+            Executed?.Invoke(args);
         }
     }
 }

@@ -27,13 +27,31 @@ namespace TestNeato
             var parser = new CommandLineParser();
             bool wasFluffed = false;
             bool wasGargled = false;
-            parser.RegisterCommand("fluff").Executed += () => { wasFluffed = true; };
-            parser.RegisterCommand("gargle").Executed += () => { wasGargled = true; };
+            parser.RegisterCommand("fluff").Executed += (args) => { wasFluffed = true; };
+            parser.RegisterCommand("gargle").Executed += (args) => { wasGargled = true; };
 
             parser.Consume(new string[] { "fluff" });
 
             wasGargled.Should().BeFalse();
             wasFluffed.Should().BeTrue();
+        }
+
+        [Fact]
+        public void registered_command_runs_command_args()
+        {
+            var parser = new CommandLineParser();
+            var stringVal = string.Empty;
+            var numberVal = -1;
+
+            parser.RegisterCommand("fluff").Executed += (args) =>
+            {
+                numberVal = args.NextInt();
+                stringVal = args.NextString();
+            };
+            parser.Consume(new string[] { "fluff", "5", "garfield" }); // how do we emit behavior out of this??
+
+            stringVal.Should().Be("garfield");
+            numberVal.Should().Be(5);
         }
     }
 }
