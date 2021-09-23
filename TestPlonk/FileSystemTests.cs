@@ -84,25 +84,21 @@ namespace TestPlonk
         public void can_create_absolute_directories()
         {
             var fileSystem = new FileManager(PathType.Relative);
-            var testPathRelative = "test-empty-directory";
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            try { Directory.Delete(testPathFull); }
-            catch { }
+            var emptyDirectoryRelative = "test-empty-directory";
+            var emptyDirectoryFull = Path.Join(Directory.GetCurrentDirectory(), emptyDirectoryRelative);
             var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            fileSystem.MakeDirectory(PathType.Absolute, testPathFull);
+            fileSystem.MakeDirectory(PathType.Absolute, emptyDirectoryFull);
             var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
 
-            lsResultsBefore.Should().NotContain(testPathFull);
-            lsResultsAfter.Should().Contain(testPathFull);
+            lsResultsBefore.Should().NotContain(emptyDirectoryFull);
+            lsResultsAfter.Should().Contain(emptyDirectoryFull);
 
-            Directory.Delete(testPathFull);
+            Directory.Delete(emptyDirectoryFull);
         }
 
         [Fact]
         public void can_remove_absolute_directories()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
             var fileSystem = new FileManager(PathType.Relative);
             Directory.CreateDirectory(testPathFull);
 
@@ -117,9 +113,6 @@ namespace TestPlonk
         [Fact]
         public void can_recursively_remove_directories()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            Directory.CreateDirectory(testPathFull);
             Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
 
             var existsBefore = Directory.Exists(testPathFull);
@@ -134,9 +127,6 @@ namespace TestPlonk
         [Fact]
         public void can_create_file_relative()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            Directory.CreateDirectory(testPathFull);
             var fileSystem = new FileManager(PathType.Relative, testPathRelative);
 
             var existsBefore = File.Exists(Path.Join(testPathFull, "a.test"));
@@ -150,9 +140,6 @@ namespace TestPlonk
         [Fact]
         public void can_create_file_absolute()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            Directory.CreateDirectory(testPathFull);
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
 
             var existsBefore = File.Exists(Path.Join(testPathFull, "a.test"));
