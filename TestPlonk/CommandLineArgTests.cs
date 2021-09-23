@@ -47,13 +47,8 @@ namespace TestNeato
             {
                 numberVal = args.NextInt();
                 stringVal = args.NextString();
-<<<<<<< Updated upstream
             });
-            parser.Consume(new string[] { "fluff", "5", "garfield" }); // how do we emit behavior out of this??
-=======
-            };
             parser.Consume(new string[] { "fluff", "5", "garfield" });
->>>>>>> Stashed changes
 
             stringVal.Should().Be("garfield");
             numberVal.Should().Be(5);
