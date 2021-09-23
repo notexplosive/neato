@@ -67,8 +67,6 @@ namespace TestPlonk
         [Fact]
         public void can_remove_relative_directories()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
             var fileSystem = new FileManager(PathType.Relative);
             Directory.CreateDirectory(testPathFull);
 
