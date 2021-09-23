@@ -39,7 +39,7 @@ namespace Plonk
             }
         }
 
-        public string WorkingDirectory { get; set; }
+        public string WorkingDirectory { get; private set; }
 
         public void MakeDirectory(PathContext context)
         {
