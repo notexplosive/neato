@@ -27,8 +27,8 @@ namespace TestNeato
             var parser = new CommandLineParser();
             bool wasFluffed = false;
             bool wasGargled = false;
-            parser.RegisterCommand("fluff", () => { wasFluffed = true; });
-            parser.RegisterCommand("gargle", () => { wasGargled = true; });
+            parser.RegisterCommand("fluff").Executed += () => { wasFluffed = true; };
+            parser.RegisterCommand("gargle").Executed += () => { wasGargled = true; };
 
             parser.Consume(new string[] { "fluff" });
 

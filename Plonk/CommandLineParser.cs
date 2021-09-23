@@ -9,14 +9,14 @@ namespace Neato
 {
     public class CommandLineParser
     {
-        private readonly Dictionary<string, Action> registeredCommands = new Dictionary<string, Action>();
+        private readonly Dictionary<string, Command> registeredCommands = new Dictionary<string, Command>();
 
         public bool Consume(string[] fullArgs)
         {
             var command = fullArgs[0];
             if (registeredCommands.ContainsKey(fullArgs[0]))
             {
-                registeredCommands[fullArgs[0]]();
+                registeredCommands[fullArgs[0]].Execute();
                 return true;
             }
             else
@@ -25,9 +25,25 @@ namespace Neato
             }
         }
 
-        public void RegisterCommand(string commandName, Action behavior)
+        public Command RegisterCommand(string commandName)
         {
-            this.registeredCommands.Add(commandName, behavior);
+            var command = new Command();
+            this.registeredCommands.Add(commandName, command);
+            return command;
+        }
+    }
+
+    public class Command
+    {
+        public Command()
+        {
+        }
+
+        public event Action Executed;
+
+        public void Execute()
+        {
+            Executed?.Invoke();
         }
     }
 }
