@@ -10,6 +10,24 @@ namespace Neato
     public class TokenList
     {
         private readonly List<string> list;
+        private int currentPosition = 0;
+        private string error = string.Empty;
+        private bool hasError;
+
+        public string Error()
+        {
+            return this.error;
+        }
+
+        public void SaveError(string text)
+        {
+            if (this.error.Length > 0)
+            {
+                this.error += "\n";
+            }
+            this.error += text;
+            this.hasError = true;
+        }
 
         public TokenList(string[] args)
         {
@@ -22,18 +40,40 @@ namespace Neato
 
         public string NextString()
         {
-            var item = this.list[0];
-            this.list.RemoveAt(0);
+            if (this.list.Count > 0)
+            {
+                var item = this.list[0];
+                this.list.RemoveAt(0);
+                this.currentPosition++;
 
-            return item;
+                return item;
+            }
+            else
+            {
+                SaveError(string.Format("Missing value at position {0}", this.currentPosition));
+                return "";
+            }
         }
 
         public int NextInt()
         {
-            var item = this.list[0];
-            this.list.RemoveAt(0);
+            var token = NextString();
+            var canParse = int.TryParse(token, out int result);
 
-            return int.Parse(item);
+            if (canParse)
+            {
+                return result;
+            }
+            else
+            {
+                SaveError(string.Format("Expected integer at position {0}, got {1}", this.currentPosition, token.Length > 0 ? token : "nothing"));
+                return -1;
+            }
+        }
+
+        public bool HasFailure()
+        {
+            return this.hasError;
         }
     }
 
@@ -41,19 +81,24 @@ namespace Neato
     {
         private readonly Dictionary<string, Command> registeredCommands = new Dictionary<string, Command>();
 
-        public bool Consume(string[] argArray)
+        public bool Consume(string[] argArray, out string error)
         {
             var args = new TokenList(argArray);
             var command = args.NextString();
+            var succeeded = false;
             if (registeredCommands.ContainsKey(command))
             {
                 registeredCommands[command].Execute(args);
-                return true;
             }
-            else
+
+            error = string.Empty;
+
+            if (args.HasFailure())
             {
-                return false;
+                error = args.Error();
             }
+
+            return succeeded;
         }
 
         public Command RegisterCommand(string commandName)
