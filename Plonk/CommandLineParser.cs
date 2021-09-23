@@ -33,7 +33,7 @@ namespace Neato
 
         public Command RegisterCommand(string commandName)
         {
-            var command = new Command();
+            var command = new Command(commandName);
             this.registeredCommands.Add(commandName, command);
             return command;
         }
@@ -41,27 +41,90 @@ namespace Neato
 
     public class Command
     {
-        public Command()
+        public Command(string commandName)
         {
+            this.commandName = commandName;
         }
 
-        public void OnExecuted(Action<TokenList> action)
+        public void OnExecuted(Action<List<Parameter>> action)
         {
             this.executed = action;
         }
 
-        private Action<TokenList> executed;
+        private Action<List<Parameter>> executed;
+        public readonly string commandName;
+        public readonly List<Parameter> parameters = new List<Parameter>();
 
         public void Execute(TokenList args)
         {
             try
             {
-                executed?.Invoke(args);
+                foreach (var parameter in parameters)
+                {
+                    parameter.ExtractValue(args);
+                }
+                executed?.Invoke(parameters);
             }
             catch (TokenizerFailedException)
             {
                 Console.Error.WriteLine(args.Error());
             }
+        }
+
+        public Command AddParameter(Parameter parameter)
+        {
+            this.parameters.Add(parameter);
+            return this;
+        }
+
+        public string Usage()
+        {
+            var tokens = new List<string>();
+
+            tokens.Add(this.commandName);
+            foreach (var parameter in parameters)
+            {
+                tokens.Add("<" + parameter.name + ">");
+            }
+
+            return string.Join(" ", tokens);
+        }
+    }
+
+    public class Parameter
+    {
+        public enum PrimitiveType
+        {
+            Integer,
+            String
+        }
+
+        public readonly string name;
+        private readonly PrimitiveType primitiveType;
+        private object value = null;
+
+        public Parameter(string name, PrimitiveType type)
+        {
+            this.name = name;
+            this.primitiveType = type;
+        }
+
+        public void ExtractValue(TokenList args)
+        {
+            if (this.primitiveType == PrimitiveType.Integer)
+                this.value = args.NextInt();
+            else if (this.primitiveType == PrimitiveType.String)
+                this.value = args.NextString();
+        }
+
+        public string AsString()
+        {
+            return this.value as string;
+        }
+
+        public int AsInt()
+        {
+            return Convert.ToInt32(this.value);
         }
     }
 }

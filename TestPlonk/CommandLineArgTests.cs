@@ -43,10 +43,13 @@ namespace TestNeato
             var stringVal = string.Empty;
             var numberVal = -1;
 
-            parser.RegisterCommand("fluff").OnExecuted((args) =>
+            parser.RegisterCommand("fluff")
+                .AddParameter(new Parameter("crab", Parameter.PrimitiveType.Integer))
+                .AddParameter(new Parameter("claw", Parameter.PrimitiveType.String))
+                .OnExecuted((parameters) =>
             {
-                numberVal = args.NextInt();
-                stringVal = args.NextString();
+                numberVal = parameters[0].AsInt();
+                stringVal = parameters[1].AsString();
             });
             parser.Consume(new string[] { "fluff", "5", "garfield" }, out string error);
 
@@ -61,17 +64,32 @@ namespace TestNeato
             var stringVal = "original";
             var numberVal = -23;
 
-            parser.RegisterCommand("fluff").OnExecuted((args) =>
+            parser.RegisterCommand("fluff")
+                .AddParameter(new Parameter("claw", Parameter.PrimitiveType.String))
+                .AddParameter(new Parameter("crab", Parameter.PrimitiveType.Integer))
+                .OnExecuted((parameters) =>
             {
-                stringVal = args.NextString();
-                numberVal = args.NextInt();
+                stringVal = parameters[0].AsString();
+                numberVal = parameters[1].AsInt();
             });
 
             parser.Consume(new string[] { "fluff", "raggle" }, out string error);
 
-            stringVal.Should().Be("raggle");
+            stringVal.Should().Be("original");
             numberVal.Should().Be(-23);
             error.Should().Be("Missing value at position 2");
+        }
+
+        [Fact]
+        public void command_tells_you_how_to_use_it()
+        {
+            var command = new Command("fluff")
+                .AddParameter(
+                    new Parameter("fluffing amount", Parameter.PrimitiveType.Integer))
+                .AddParameter(
+                    new Parameter("name", Parameter.PrimitiveType.String));
+
+            command.Usage().Should().Be("fluff <fluffing amount> <name>");
         }
     }
 }
