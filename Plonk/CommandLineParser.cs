@@ -31,8 +31,6 @@ namespace Neato
             {
                 throw new CommandNotFoundException(commandName);
             }
-
-            return false;
         }
 
         public Command RegisterCommand(string commandName)
