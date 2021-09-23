@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PlonkCLI
+namespace NeatoCLI
 {
     class Program
     {
