@@ -13,18 +13,6 @@ namespace Plonk
         Relative
     }
 
-    public class PathContext
-    {
-        public readonly PathType pathType;
-        public readonly string path;
-
-        public PathContext(PathType pathType, string path)
-        {
-            this.pathType = pathType;
-            this.path = path;
-        }
-    }
-
     public class FileManager
     {
         public FileManager(PathType pathType)
