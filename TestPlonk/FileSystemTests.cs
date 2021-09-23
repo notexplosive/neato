@@ -57,7 +57,7 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Relative);
             var emptyDirectoryFull = Path.Join(this.testPathFull, "empty-directory");
             var lsResultsBefore = Directory.GetDirectories(this.testPathFull);
-            fileSystem.MakeDirectory(PathType.Relative, Path.Join(this.testPathRelative, "empty-directory"));
+            fileSystem.MakeDirectory(new PathContext(PathType.Relative, Path.Join(this.testPathRelative, "empty-directory")));
             var lsResultsAfter = Directory.GetDirectories(this.testPathFull);
 
             lsResultsBefore.Should().NotContain(emptyDirectoryFull);
@@ -71,7 +71,7 @@ namespace TestPlonk
             Directory.CreateDirectory(testPathFull);
 
             var existsBefore = Directory.Exists(testPathFull);
-            fileSystem.RemoveDirectory(PathType.Relative, testPathRelative);
+            fileSystem.RemoveDirectory(new PathContext(PathType.Relative, testPathRelative));
             var existsAfter = Directory.Exists(testPathFull);
 
             existsBefore.Should().BeTrue();
@@ -85,7 +85,7 @@ namespace TestPlonk
             var emptyDirectoryRelative = "test-empty-directory";
             var emptyDirectoryFull = Path.Join(Directory.GetCurrentDirectory(), emptyDirectoryRelative);
             var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            fileSystem.MakeDirectory(PathType.Absolute, emptyDirectoryFull);
+            fileSystem.MakeDirectory(new PathContext(PathType.Absolute, emptyDirectoryFull));
             var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
 
             lsResultsBefore.Should().NotContain(emptyDirectoryFull);
@@ -101,7 +101,7 @@ namespace TestPlonk
             Directory.CreateDirectory(testPathFull);
 
             var existsBefore = Directory.Exists(testPathFull);
-            fileSystem.RemoveDirectory(PathType.Absolute, testPathFull);
+            fileSystem.RemoveDirectory(new PathContext(PathType.Absolute, testPathFull));
             var existsAfter = Directory.Exists(testPathFull);
 
             existsBefore.Should().BeTrue();
@@ -115,7 +115,7 @@ namespace TestPlonk
 
             var existsBefore = Directory.Exists(testPathFull);
             var fileSystem = new FileManager(PathType.Relative);
-            fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
+            fileSystem.RemoveDirectoryRecursive(new PathContext(PathType.Absolute, testPathFull));
             var existsAfter = Directory.Exists(testPathFull);
 
             existsBefore.Should().BeTrue();
@@ -128,7 +128,7 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Relative, testPathRelative);
 
             var existsBefore = File.Exists(Path.Join(testPathFull, "a.test"));
-            fileSystem.CreateFile(PathType.Relative, "a.test");
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "a.test"));
             var existsAfter = File.Exists(Path.Join(testPathFull, "a.test"));
 
             existsBefore.Should().BeFalse();
@@ -141,7 +141,7 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
 
             var existsBefore = File.Exists(Path.Join(testPathFull, "a.test"));
-            fileSystem.CreateFile(PathType.Absolute, Path.Join(testPathFull, "a.test"));
+            fileSystem.CreateFile(new PathContext(PathType.Absolute, Path.Join(testPathFull, "a.test")));
             var existsAfter = File.Exists(Path.Join(testPathFull, "a.test"));
 
             existsBefore.Should().BeFalse();
@@ -152,15 +152,15 @@ namespace TestPlonk
         public void can_remove_files_matching_wildcard_relative()
         {
             var fileSystem = new FileManager(PathType.Relative, testPathRelative);
-            fileSystem.CreateFile(PathType.Relative, "a.del");
-            fileSystem.CreateFile(PathType.Relative, "b.del");
-            fileSystem.CreateFile(PathType.Relative, "c.del");
-            fileSystem.CreateFile(PathType.Relative, "a.keep");
-            fileSystem.CreateFile(PathType.Relative, "b.keep");
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "a.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "b.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "c.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "a.keep"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "b.keep"));
             Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
 
             var filesBefore = Directory.GetFiles(testPathFull);
-            fileSystem.RemoveFiles(PathType.Relative, ".", "*.del");
+            fileSystem.RemoveFiles(new PathContext(PathType.Relative, "."), "*.del");
             var filesAfter = Directory.GetFiles(testPathFull);
 
             filesBefore.Should().HaveCount(5);
@@ -169,22 +169,22 @@ namespace TestPlonk
             Directory.GetDirectories(testPathFull).Should().Contain(Path.Join(testPathFull, "temp"));
             filesAfter.Should().NotContain(Path.Join(testPathFull, "a.del"), Path.Join(testPathFull, "b.del"), Path.Join(testPathFull, "c.del"));
 
-            fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
+            fileSystem.RemoveDirectoryRecursive(new PathContext(PathType.Absolute, testPathFull));
         }
 
         [Fact]
         public void can_remove_files_matching_wildcard_absolute()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.CreateFile(PathType.Relative, "a.del");
-            fileSystem.CreateFile(PathType.Relative, "b.del");
-            fileSystem.CreateFile(PathType.Relative, "c.del");
-            fileSystem.CreateFile(PathType.Relative, "a.keep");
-            fileSystem.CreateFile(PathType.Relative, "b.keep");
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "a.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "b.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "c.del"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "a.keep"));
+            fileSystem.CreateFile(new PathContext(PathType.Relative, "b.keep"));
             Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
 
             var filesBefore = Directory.GetFiles(testPathFull);
-            fileSystem.RemoveFiles(PathType.Absolute, testPathFull, "*.del");
+            fileSystem.RemoveFiles(new PathContext(PathType.Absolute, testPathFull), "*.del");
             var filesAfter = Directory.GetFiles(testPathFull);
 
             filesBefore.Should().HaveCount(5);
@@ -193,7 +193,7 @@ namespace TestPlonk
             Directory.GetDirectories(testPathFull).Should().Contain(Path.Join(testPathFull, "temp"));
             filesAfter.Should().NotContain(Path.Join(testPathFull, "a.del"), Path.Join(testPathFull, "b.del"), Path.Join(testPathFull, "c.del"));
 
-            fileSystem.RemoveDirectoryRecursive(PathType.Absolute, testPathFull);
+            fileSystem.RemoveDirectoryRecursive(new PathContext(PathType.Absolute, testPathFull));
         }
 
 

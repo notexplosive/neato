@@ -41,34 +41,29 @@ namespace Plonk
 
         public string WorkingDirectory { get; set; }
 
-        public void MakeDirectory(PathType pathType, string path)
+        public void MakeDirectory(PathContext context)
         {
-            var context = new PathContext(pathType, path);
             Directory.CreateDirectory(context.CalculatePath(WorkingDirectory));
         }
 
-        public void RemoveDirectory(PathType pathType, string path)
+        public void RemoveDirectory(PathContext context)
         {
-            var context = new PathContext(pathType, path);
             Directory.Delete(context.CalculatePath(WorkingDirectory));
         }
 
-        public void RemoveDirectoryRecursive(PathType pathType, string path)
+        public void RemoveDirectoryRecursive(PathContext context)
         {
-            var context = new PathContext(pathType, path);
             Directory.Delete(context.CalculatePath(WorkingDirectory), true);
         }
 
-        public void CreateFile(PathType pathType, string path)
+        public void CreateFile(PathContext context)
         {
-            var context = new PathContext(pathType, path);
             var file = File.Create(context.CalculatePath(WorkingDirectory));
             file.Close();
         }
 
-        public void RemoveFiles(PathType pathType, string path, string pattern)
+        public void RemoveFiles(PathContext context, string pattern)
         {
-            var context = new PathContext(pathType, path);
             var files = Directory.EnumerateFiles(context.CalculatePath(WorkingDirectory), pattern);
             var failed = true;
 
