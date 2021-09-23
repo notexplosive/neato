@@ -27,8 +27,8 @@ namespace TestNeato
             var parser = new CommandLineParser();
             bool wasFluffed = false;
             bool wasGargled = false;
-            parser.RegisterCommand("fluff").Executed += (args) => { wasFluffed = true; };
-            parser.RegisterCommand("gargle").Executed += (args) => { wasGargled = true; };
+            parser.RegisterCommand("fluff").OnExecuted((args) => { wasFluffed = true; });
+            parser.RegisterCommand("gargle").OnExecuted((args) => { wasGargled = true; });
 
             parser.Consume(new string[] { "fluff" });
 
@@ -43,11 +43,11 @@ namespace TestNeato
             var stringVal = string.Empty;
             var numberVal = -1;
 
-            parser.RegisterCommand("fluff").Executed += (args) =>
+            parser.RegisterCommand("fluff").OnExecuted((args) =>
             {
                 numberVal = args.NextInt();
                 stringVal = args.NextString();
-            };
+            });
             parser.Consume(new string[] { "fluff", "5", "garfield" }); // how do we emit behavior out of this??
 
             stringVal.Should().Be("garfield");

@@ -70,11 +70,16 @@ namespace Neato
         {
         }
 
-        public event Action<TokenList> Executed;
+        public void OnExecuted(Action<TokenList> action)
+        {
+            this.executed = action;
+        }
+
+        private Action<TokenList> executed;
 
         public void Execute(TokenList args)
         {
-            Executed?.Invoke(args);
+            executed?.Invoke(args);
         }
     }
 }
