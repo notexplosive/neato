@@ -101,5 +101,10 @@ namespace Plonk
             var realPath = CalculatePath(pathType, path);
             File.WriteAllText(realPath, content);
         }
+
+        public void Copy(PathType sourcePathType, string sourcePath, PathType destinationPathType, string destinationPath)
+        {
+            File.Copy(CalculatePath(sourcePathType, sourcePath), CalculatePath(destinationPathType, destinationPath));
+        }
     }
 }

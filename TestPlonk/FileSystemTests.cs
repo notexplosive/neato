@@ -219,32 +219,52 @@ namespace TestPlonk
             fileContents.Should().Be("lorem ipsum");
         }
 
-        /*
         [Fact]
         public void can_copy_file_relative_to_relative()
         {
-        }
-        */
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-        /*
+            fileSystem.Copy(PathType.Relative, "hello.txt", PathType.Relative, "goodbye.txt");
+
+            File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
+            File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
+        }
+
         [Fact]
         public void can_copy_file_relative_to_absolute()
         {
-        }
-        */
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-        /*
+            fileSystem.Copy(PathType.Relative, "hello.txt", PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt"));
+
+            File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
+            File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
+        }
+
         [Fact]
         public void can_copy_file_absolute_to_relative()
         {
-        }
-        */
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-        /*
+            fileSystem.Copy(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), PathType.Relative, "goodbye.txt");
+
+            File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
+            File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
+        }
+
         [Fact]
         public void can_copy_file_absolute_to_absolute()
         {
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+
+            fileSystem.Copy(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt"));
+
+            File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
+            File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
         }
-        */
     }
 }
