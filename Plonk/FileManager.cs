@@ -96,11 +96,9 @@ namespace Plonk
             File.WriteAllText(realPath, content);
         }
 
-        public void Copy(PathType sourcePathType, string sourcePath, PathType destinationPathType, string destinationPath)
+        public void Copy(PathContext source, PathContext destination)
         {
-            var sourceContext = new PathContext(sourcePathType, sourcePath);
-            var destinationContext = new PathContext(destinationPathType, destinationPath);
-            File.Copy(sourceContext.CalculatePath(WorkingDirectory), destinationContext.CalculatePath(WorkingDirectory));
+            File.Copy(source.CalculatePath(WorkingDirectory), destination.CalculatePath(WorkingDirectory));
         }
     }
 }

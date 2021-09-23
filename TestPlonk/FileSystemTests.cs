@@ -225,7 +225,9 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
             fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-            fileSystem.Copy(PathType.Relative, "hello.txt", PathType.Relative, "goodbye.txt");
+            fileSystem.Copy(
+                new PathContext(PathType.Relative, "hello.txt"),
+                new PathContext(PathType.Relative, "goodbye.txt"));
 
             File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
             File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
@@ -237,7 +239,9 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
             fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-            fileSystem.Copy(PathType.Relative, "hello.txt", PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt"));
+            fileSystem.Copy(
+                new PathContext(PathType.Relative, "hello.txt"),
+                new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt")));
 
             File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
             File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
@@ -249,7 +253,9 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
             fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-            fileSystem.Copy(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), PathType.Relative, "goodbye.txt");
+            fileSystem.Copy(
+                new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")),
+                new PathContext(PathType.Relative, "goodbye.txt"));
 
             File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
             File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
@@ -261,7 +267,9 @@ namespace TestPlonk
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
             fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
 
-            fileSystem.Copy(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt"));
+            fileSystem.Copy(
+                new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")),
+                new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "goodbye.txt")));
 
             File.ReadAllText(Path.Join(this.testPathFull, "goodbye.txt")).Should().Be("lorem ipsum");
             File.Exists(Path.Join(this.testPathFull, "hello.txt")).Should().BeTrue();
