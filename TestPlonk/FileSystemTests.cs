@@ -201,7 +201,7 @@ namespace TestPlonk
         public void can_write_to_file_relative()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Relative, "hello.txt", "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Relative, "hello.txt"), "lorem ipsum");
 
             var fileContents = File.ReadAllText(Path.Join(this.testPathFull, "hello.txt"));
 
@@ -212,7 +212,7 @@ namespace TestPlonk
         public void can_write_to_file_absolute()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")), "lorem ipsum");
 
             var fileContents = File.ReadAllText(Path.Join(this.testPathFull, "hello.txt"));
 
@@ -223,7 +223,7 @@ namespace TestPlonk
         public void can_copy_file_relative_to_relative()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")), "lorem ipsum");
 
             fileSystem.Copy(
                 new PathContext(PathType.Relative, "hello.txt"),
@@ -237,7 +237,7 @@ namespace TestPlonk
         public void can_copy_file_relative_to_absolute()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")), "lorem ipsum");
 
             fileSystem.Copy(
                 new PathContext(PathType.Relative, "hello.txt"),
@@ -251,7 +251,7 @@ namespace TestPlonk
         public void can_copy_file_absolute_to_relative()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")), "lorem ipsum");
 
             fileSystem.Copy(
                 new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")),
@@ -265,7 +265,7 @@ namespace TestPlonk
         public void can_copy_file_absolute_to_absolute()
         {
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
-            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+            fileSystem.WriteToFile(new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")), "lorem ipsum");
 
             fileSystem.Copy(
                 new PathContext(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt")),

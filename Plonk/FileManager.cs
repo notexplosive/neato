@@ -89,9 +89,8 @@ namespace Plonk
             }
         }
 
-        public void WriteToFile(PathType pathType, string path, string content)
+        public void WriteToFile(PathContext context, string content)
         {
-            var context = new PathContext(pathType, path);
             var realPath = context.CalculatePath(WorkingDirectory);
             File.WriteAllText(realPath, content);
         }
