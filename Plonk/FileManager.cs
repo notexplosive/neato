@@ -95,5 +95,11 @@ namespace Plonk
                 }
             }
         }
+
+        public void WriteToFile(PathType pathType, string path, string content)
+        {
+            var realPath = CalculatePath(pathType, path);
+            File.WriteAllText(realPath, content);
+        }
     }
 }

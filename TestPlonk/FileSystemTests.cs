@@ -197,12 +197,16 @@ namespace TestPlonk
         }
 
 
-        /*
         [Fact]
         public void can_write_to_file_relative()
         {
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Relative, "hello.txt", "lorem ipsum");
+
+            var fileContents = File.ReadAllText(Path.Join(this.testPathFull, "hello.txt"));
+
+            fileContents.Should().Be("lorem ipsum");
         }
-        */
 
         /*
         [Fact]
