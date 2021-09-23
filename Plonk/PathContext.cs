@@ -4,8 +4,8 @@ namespace Plonk
 {
     public class PathContext
     {
-        public readonly PathType pathType;
-        public readonly string path;
+        private readonly PathType pathType;
+        private readonly string path;
 
         public PathContext(PathType pathType, string path)
         {
