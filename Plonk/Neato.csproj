@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>Neato</AssemblyName>
+    <RootNamespace>Neato</RootNamespace>
   </PropertyGroup>
 
 </Project>

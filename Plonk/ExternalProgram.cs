@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace Plonk
+namespace Neato
 {
     public class ProgramOutput
     {

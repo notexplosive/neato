@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Plonk
+namespace Neato
 {
     public class PathContext
     {
