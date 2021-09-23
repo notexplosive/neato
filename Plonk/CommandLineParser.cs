@@ -7,28 +7,32 @@ using System.Threading.Tasks;
 
 namespace Neato
 {
+    public class CommandNotFoundException : Exception
+    {
+        public CommandNotFoundException(string message) : base(message)
+        {
+
+        }
+    }
+
     public class CommandLineParser
     {
         private readonly Dictionary<string, Command> registeredCommands = new Dictionary<string, Command>();
 
-        public bool Consume(string[] argArray, out string error)
+        public bool Consume(string[] argArray)
         {
             var args = new TokenList(argArray);
-            var command = args.NextString();
-            var succeeded = false;
-            if (registeredCommands.ContainsKey(command))
+            var commandName = args.NextString();
+            if (registeredCommands.ContainsKey(commandName))
             {
-                registeredCommands[command].Execute(args);
+                return registeredCommands[commandName].Execute(args);
+            }
+            else
+            {
+                throw new CommandNotFoundException(commandName);
             }
 
-            error = string.Empty;
-
-            if (args.HasFailure())
-            {
-                error = args.Error();
-            }
-
-            return succeeded;
+            return false;
         }
 
         public Command RegisterCommand(string commandName)
@@ -55,7 +59,7 @@ namespace Neato
         public readonly string commandName;
         public readonly List<Parameter> parameters = new List<Parameter>();
 
-        public void Execute(TokenList args)
+        public bool Execute(TokenList args)
         {
             try
             {
@@ -65,10 +69,13 @@ namespace Neato
                 }
                 executed?.Invoke(parameters);
             }
-            catch (TokenizerFailedException)
+            catch (TokenizerFailedException e)
             {
-                Console.Error.WriteLine(args.Error());
+                Console.Error.WriteLine(e.Message);
+                return false;
             }
+
+            return true;
         }
 
         public Command AddParameter(Parameter parameter)

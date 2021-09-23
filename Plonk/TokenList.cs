@@ -7,23 +7,6 @@ namespace Neato
     {
         private readonly List<string> list;
         private int currentPosition = 0;
-        private string error = string.Empty;
-        private bool hasError;
-
-        public string Error()
-        {
-            return this.error;
-        }
-
-        public void SaveError(string text)
-        {
-            if (this.error.Length > 0)
-            {
-                this.error += "\n";
-            }
-            this.error += text;
-            this.hasError = true;
-        }
 
         public TokenList(string[] args)
         {
@@ -46,8 +29,7 @@ namespace Neato
             }
             else
             {
-                SaveError(string.Format("Missing value at position {0}", this.currentPosition));
-                throw new TokenizerFailedException();
+                throw new TokenizerFailedException(string.Format("Missing value at position {0}", this.currentPosition));
             }
         }
 
@@ -62,18 +44,15 @@ namespace Neato
             }
             else
             {
-                SaveError(string.Format("Expected integer at position {0}, got {1}", this.currentPosition, token.Length > 0 ? token : "nothing"));
-                throw new TokenizerFailedException();
+                throw new TokenizerFailedException(string.Format("Expected integer at position {0}, got {1}", this.currentPosition, token.Length > 0 ? token : "nothing"));
             }
-        }
-
-        public bool HasFailure()
-        {
-            return this.hasError;
         }
     }
 
     public class TokenizerFailedException : Exception
     {
+        public TokenizerFailedException(string message) : base(message)
+        {
+        }
     }
 }

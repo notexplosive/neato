@@ -16,9 +16,18 @@ namespace TestNeato
         public void invalid_flag_raises_error()
         {
             var parser = new CommandLineParser();
-            var result = parser.Consume(new string[] { "--spujb" }, out string error);
+            var pass = false;
 
-            result.Should().BeFalse();
+            try
+            {
+                parser.Consume(new string[] { "--spujb" });
+            }
+            catch (CommandNotFoundException)
+            {
+                pass = true;
+            }
+
+            pass.Should().BeTrue();
         }
 
         [Fact]
@@ -30,7 +39,7 @@ namespace TestNeato
             parser.RegisterCommand("fluff").OnExecuted((args) => { wasFluffed = true; });
             parser.RegisterCommand("gargle").OnExecuted((args) => { wasGargled = true; });
 
-            parser.Consume(new string[] { "fluff" }, out string error);
+            parser.Consume(new string[] { "fluff" });
 
             wasGargled.Should().BeFalse();
             wasFluffed.Should().BeTrue();
@@ -51,7 +60,7 @@ namespace TestNeato
                 numberVal = parameters[0].AsInt();
                 stringVal = parameters[1].AsString();
             });
-            parser.Consume(new string[] { "fluff", "5", "garfield" }, out string error);
+            parser.Consume(new string[] { "fluff", "5", "garfield" });
 
             stringVal.Should().Be("garfield");
             numberVal.Should().Be(5);
@@ -73,11 +82,11 @@ namespace TestNeato
                 numberVal = parameters[1].AsInt();
             });
 
-            parser.Consume(new string[] { "fluff", "raggle" }, out string error);
+            var ranSuccessfully = parser.Consume(new string[] { "fluff", "raggle" });
 
             stringVal.Should().Be("original");
             numberVal.Should().Be(-23);
-            error.Should().Be("Missing value at position 2");
+            ranSuccessfully.Should().BeFalse();
         }
 
         [Fact]
