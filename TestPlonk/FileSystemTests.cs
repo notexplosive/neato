@@ -208,12 +208,16 @@ namespace TestPlonk
             fileContents.Should().Be("lorem ipsum");
         }
 
-        /*
         [Fact]
         public void can_write_to_file_absolute()
         {
+            var fileSystem = new FileManager(PathType.Absolute, testPathFull);
+            fileSystem.WriteToFile(PathType.Absolute, Path.Join(this.testPathFull, "hello.txt"), "lorem ipsum");
+
+            var fileContents = File.ReadAllText(Path.Join(this.testPathFull, "hello.txt"));
+
+            fileContents.Should().Be("lorem ipsum");
         }
-        */
 
         /*
         [Fact]
