@@ -9,9 +9,25 @@ namespace Neato
 {
     public class CommandLineParser
     {
-        public string Consume(string[] fullArgs)
+        private readonly Dictionary<string, Action> registeredCommands = new Dictionary<string, Action>();
+
+        public bool Consume(string[] fullArgs)
         {
-            return string.Format("Usage {0}", Path.Join(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName));
+            var command = fullArgs[0];
+            if (registeredCommands.ContainsKey(fullArgs[0]))
+            {
+                registeredCommands[fullArgs[0]]();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void RegisterCommand(string commandName, Action behavior)
+        {
+            this.registeredCommands.Add(commandName, behavior);
         }
     }
 }

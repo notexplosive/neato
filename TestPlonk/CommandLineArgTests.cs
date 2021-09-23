@@ -18,7 +18,22 @@ namespace TestNeato
             var parser = new CommandLineParser();
             var result = parser.Consume(new string[] { "--spujb" });
 
-            result.Should().Be(string.Format("Usage {0}", Path.Join(Directory.GetCurrentDirectory(), System.AppDomain.CurrentDomain.FriendlyName)));
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void registered_command_runs_command()
+        {
+            var parser = new CommandLineParser();
+            bool wasFluffed = false;
+            bool wasGargled = false;
+            parser.RegisterCommand("fluff", () => { wasFluffed = true; });
+            parser.RegisterCommand("gargle", () => { wasGargled = true; });
+
+            parser.Consume(new string[] { "fluff" });
+
+            wasGargled.Should().BeFalse();
+            wasFluffed.Should().BeTrue();
         }
     }
 }
