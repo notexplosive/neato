@@ -47,11 +47,34 @@ namespace TestNeato
             {
                 numberVal = args.NextInt();
                 stringVal = args.NextString();
+<<<<<<< Updated upstream
             });
             parser.Consume(new string[] { "fluff", "5", "garfield" }); // how do we emit behavior out of this??
+=======
+            };
+            parser.Consume(new string[] { "fluff", "5", "garfield" });
+>>>>>>> Stashed changes
 
             stringVal.Should().Be("garfield");
             numberVal.Should().Be(5);
+        }
+
+        [Fact]
+        public void registered_command_runs_fails_with_not_enough_args()
+        {
+            var parser = new CommandLineParser();
+            var stringVal = "original";
+            var numberVal = -23;
+
+            parser.RegisterCommand("fluff").Executed += (args) =>
+            {
+                numberVal = args.NextInt();
+                stringVal = args.NextString();
+            };
+            parser.Consume(new string[] { "fluff", "5" });
+
+            stringVal.Should().Be("original");
+            numberVal.Should().Be(-23);
         }
     }
 }
