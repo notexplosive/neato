@@ -61,11 +61,11 @@ namespace TestNeato
             var stringVal = "original";
             var numberVal = -23;
 
-            parser.RegisterCommand("fluff").Executed += (args) =>
+            parser.RegisterCommand("fluff").OnExecuted((args) =>
             {
                 numberVal = args.NextInt();
                 stringVal = args.NextString();
-            };
+            });
             parser.Consume(new string[] { "fluff", "5" });
 
             stringVal.Should().Be("original");
