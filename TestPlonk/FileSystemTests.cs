@@ -55,18 +55,13 @@ namespace TestPlonk
         public void can_create_relative_directories()
         {
             var fileSystem = new FileManager(PathType.Relative);
-            var testPathRelative = "test-empty-directory";
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            try { Directory.Delete(testPathFull); }
-            catch { }
-            var lsResultsBefore = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            fileSystem.MakeDirectory(PathType.Relative, testPathRelative);
-            var lsResultsAfter = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            var emptyDirectoryFull = Path.Join(this.testPathFull, "empty-directory");
+            var lsResultsBefore = Directory.GetDirectories(this.testPathFull);
+            fileSystem.MakeDirectory(PathType.Relative, Path.Join(this.testPathRelative, "empty-directory"));
+            var lsResultsAfter = Directory.GetDirectories(this.testPathFull);
 
-            lsResultsBefore.Should().NotContain(testPathFull);
-            lsResultsAfter.Should().Contain(testPathFull);
-
-            Directory.Delete(testPathFull);
+            lsResultsBefore.Should().NotContain(emptyDirectoryFull);
+            lsResultsAfter.Should().Contain(emptyDirectoryFull);
         }
 
         [Fact]
@@ -195,9 +190,6 @@ namespace TestPlonk
         [Fact]
         public void can_remove_files_matching_wildcard_absolute()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            Directory.CreateDirectory(testPathFull);
             var fileSystem = new FileManager(PathType.Absolute, testPathFull);
             fileSystem.CreateFile(PathType.Relative, "a.del");
             fileSystem.CreateFile(PathType.Relative, "b.del");
