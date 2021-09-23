@@ -41,47 +41,35 @@ namespace Plonk
 
         public string WorkingDirectory { get; set; }
 
-        private string CalculatePath(PathContext context)
-        {
-            if (context.pathType == PathType.Relative)
-            {
-                return Path.Join(WorkingDirectory, context.path);
-            }
-            else
-            {
-                return context.path;
-            }
-        }
-
         public void MakeDirectory(PathType pathType, string path)
         {
             var context = new PathContext(pathType, path);
-            Directory.CreateDirectory(CalculatePath(context));
+            Directory.CreateDirectory(context.CalculatePath(WorkingDirectory));
         }
 
         public void RemoveDirectory(PathType pathType, string path)
         {
             var context = new PathContext(pathType, path);
-            Directory.Delete(CalculatePath(context));
+            Directory.Delete(context.CalculatePath(WorkingDirectory));
         }
 
         public void RemoveDirectoryRecursive(PathType pathType, string path)
         {
             var context = new PathContext(pathType, path);
-            Directory.Delete(CalculatePath(context), true);
+            Directory.Delete(context.CalculatePath(WorkingDirectory), true);
         }
 
         public void CreateFile(PathType pathType, string path)
         {
             var context = new PathContext(pathType, path);
-            var file = File.Create(CalculatePath(context));
+            var file = File.Create(context.CalculatePath(WorkingDirectory));
             file.Close();
         }
 
         public void RemoveFiles(PathType pathType, string path, string pattern)
         {
             var context = new PathContext(pathType, path);
-            var files = Directory.EnumerateFiles(CalculatePath(context), pattern);
+            var files = Directory.EnumerateFiles(context.CalculatePath(WorkingDirectory), pattern);
             var failed = true;
 
             while (failed)
@@ -104,7 +92,7 @@ namespace Plonk
         public void WriteToFile(PathType pathType, string path, string content)
         {
             var context = new PathContext(pathType, path);
-            var realPath = CalculatePath(context);
+            var realPath = context.CalculatePath(WorkingDirectory);
             File.WriteAllText(realPath, content);
         }
 
@@ -112,7 +100,7 @@ namespace Plonk
         {
             var sourceContext = new PathContext(sourcePathType, sourcePath);
             var destinationContext = new PathContext(destinationPathType, destinationPath);
-            File.Copy(CalculatePath(sourceContext), CalculatePath(destinationContext));
+            File.Copy(sourceContext.CalculatePath(WorkingDirectory), destinationContext.CalculatePath(WorkingDirectory));
         }
     }
 }
