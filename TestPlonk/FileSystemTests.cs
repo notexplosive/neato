@@ -10,8 +10,25 @@ using Xunit;
 
 namespace TestPlonk
 {
-    public class FileSystemTests
+    public class FileSystemTests : IDisposable
     {
+        private string testPathRelative;
+        private string testPathFull;
+
+        public FileSystemTests()
+        {
+            this.testPathRelative = Guid.NewGuid().ToString();
+            this.testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
+            Directory.CreateDirectory(this.testPathFull);
+        }
+
+        public void Dispose()
+        {
+            if (Directory.Exists(this.testPathFull))
+            {
+                Directory.Delete(this.testPathFull, true);
+            }
+        }
 
         [Fact]
         public void can_change_working_directory()
@@ -154,9 +171,6 @@ namespace TestPlonk
         [Fact]
         public void can_remove_files_matching_wildcard_relative()
         {
-            var testPathRelative = Guid.NewGuid().ToString();
-            var testPathFull = Path.Join(Directory.GetCurrentDirectory(), testPathRelative);
-            Directory.CreateDirectory(testPathFull);
             var fileSystem = new FileManager(PathType.Relative, testPathRelative);
             fileSystem.CreateFile(PathType.Relative, "a.del");
             fileSystem.CreateFile(PathType.Relative, "b.del");
