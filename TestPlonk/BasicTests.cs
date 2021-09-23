@@ -4,7 +4,7 @@ using Xunit;
 using FluentAssertions;
 using System.IO;
 
-namespace TestPlonk
+namespace TestNeato
 {
     public class BasicTests
     {

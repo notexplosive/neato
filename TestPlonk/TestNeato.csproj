@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
+    <AssemblyName>TestNeato</AssemblyName>
+    <RootNamespace>TestNeato</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -21,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plonk\Plonk.csproj" />
+    <ProjectReference Include="..\Plonk\Neato.csproj" />
   </ItemGroup>
 
 </Project>

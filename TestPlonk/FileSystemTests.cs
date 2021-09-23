@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace TestPlonk
+namespace TestNeato
 {
     public class FileSystemTests : IDisposable
     {
