@@ -12,8 +12,8 @@ namespace TestPlonk
 {
     public class FileSystemTests : IDisposable
     {
-        private string testPathRelative;
-        private string testPathFull;
+        private readonly string testPathRelative;
+        private readonly string testPathFull;
 
         public FileSystemTests()
         {
