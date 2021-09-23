@@ -70,8 +70,8 @@ namespace TestNeato
             parser.Consume(new string[] { "fluff", "raggle" }, out string error);
 
             stringVal.Should().Be("raggle");
-            numberVal.Should().Be(-1);
-            error.Should().Be("Missing value at position 2\nExpected integer at position 2, got nothing");
+            numberVal.Should().Be(-23);
+            error.Should().Be("Missing value at position 2");
         }
     }
 }

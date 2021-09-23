@@ -54,7 +54,14 @@ namespace Neato
 
         public void Execute(TokenList args)
         {
-            executed?.Invoke(args);
+            try
+            {
+                executed?.Invoke(args);
+            }
+            catch (TokenizerFailedException)
+            {
+                Console.Error.WriteLine(args.Error());
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Neato
 {
@@ -46,7 +47,7 @@ namespace Neato
             else
             {
                 SaveError(string.Format("Missing value at position {0}", this.currentPosition));
-                return "";
+                throw new TokenizerFailedException();
             }
         }
 
@@ -62,7 +63,7 @@ namespace Neato
             else
             {
                 SaveError(string.Format("Expected integer at position {0}, got {1}", this.currentPosition, token.Length > 0 ? token : "nothing"));
-                return -1;
+                throw new TokenizerFailedException();
             }
         }
 
@@ -70,5 +71,9 @@ namespace Neato
         {
             return this.hasError;
         }
+    }
+
+    public class TokenizerFailedException : Exception
+    {
     }
 }
