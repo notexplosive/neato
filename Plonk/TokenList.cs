@@ -8,7 +8,7 @@ namespace Neato
         private readonly List<string> list;
         private int currentPosition = 0;
 
-        public TokenList(string[] args)
+        public TokenList(params string[] args)
         {
             this.list = new List<string>();
             foreach (var arg in args)
