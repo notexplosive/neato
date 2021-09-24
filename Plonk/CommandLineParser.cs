@@ -9,10 +9,13 @@ namespace Neato
 {
     public class CommandNotFoundException : Exception
     {
-        public CommandNotFoundException(string message) : base(message)
-        {
+        public string CommandName { get; }
 
+        public CommandNotFoundException(string commandName) : base()
+        {
+            CommandName = commandName;
         }
+
     }
 
     public class CommandLineParser
@@ -32,6 +35,11 @@ namespace Neato
             {
                 throw new CommandNotFoundException(commandName);
             }
+        }
+
+        public string SupportedCommands()
+        {
+            return string.Join(", ", this.registeredCommands.Keys);
         }
 
         public Command RegisterCommand(string commandName)

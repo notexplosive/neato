@@ -22,7 +22,16 @@ namespace NeatoCLI
                     }
                 });
 
-            parser.Consume(args);
+
+            var api = new CommandLineHumanAPI(parser);
+            api.UserInput(args);
+
+            var error = api.NextErrorLine();
+            while (error != null)
+            {
+                Console.Error.WriteLine($"[error] {error}");
+                error = api.NextErrorLine();
+            }
         }
     }
 }

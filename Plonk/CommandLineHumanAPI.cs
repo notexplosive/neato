@@ -21,7 +21,7 @@ namespace Neato
         {
             try
             {
-                parser.Consume(args);
+                this.parser.Consume(args);
             }
             catch (CommandFailedException e)
             {
@@ -31,7 +31,8 @@ namespace Neato
             }
             catch (CommandNotFoundException e)
             {
-                this.error.Add(e.Message);
+                this.error.Add($"Unknown command '{e.CommandName}'");
+                this.error.Add($"Commands: {parser.SupportedCommands()}");
                 return false;
             }
 
