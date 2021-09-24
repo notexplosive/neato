@@ -25,7 +25,15 @@ namespace Neato
             var commandName = args.NextString();
             if (registeredCommands.ContainsKey(commandName))
             {
-                return registeredCommands[commandName].Execute(args);
+                var command = registeredCommands[commandName];
+                var wasSuccessful = command.Execute(args);
+
+                if (!wasSuccessful)
+                {
+                    Console.Error.WriteLine("usage: " + command.Usage());
+                }
+
+                return wasSuccessful;
             }
             else
             {
@@ -69,7 +77,6 @@ namespace Neato
             }
             catch (TokenizerFailedException e)
             {
-                Console.Error.WriteLine(e.Message);
                 return false;
             }
 
