@@ -22,10 +22,14 @@ namespace TestNeato
 
             using (StringWriter error = new StringWriter())
             {
+                var oldError = Console.Error;
+
                 Console.SetError(error);
                 parser.Consume(new string[] { "tick" });
 
                 error.ToString().Trim().Should().Be("usage: tick <number of times>");
+
+                Console.SetError(oldError);
             }
         }
     }
