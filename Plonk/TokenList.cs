@@ -44,7 +44,7 @@ namespace Neato
             }
             else
             {
-                throw new TokenizerFailedException(string.Format("Expected integer at position {0}, got {1}", this.currentPosition, token.Length > 0 ? token : "nothing"));
+                throw new TokenizerFailedException(string.Format("Expected integer at position {0}, got '{1}'", this.currentPosition, token.Length > 0 ? token : "nothing"));
             }
         }
     }

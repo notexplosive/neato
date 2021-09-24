@@ -29,5 +29,37 @@ namespace TestNeato
             tokenList.NextInt().Should().Be(1);
             tokenList.NextString().Should().Be("2");
         }
+
+        [Fact]
+        public void throws_exception_when_missing()
+        {
+            var tokenList = new TokenList("1");
+
+            tokenList.NextInt().Should().Be(1);
+
+            try
+            {
+                tokenList.NextInt();
+            }
+            catch (TokenizerFailedException e)
+            {
+                e.Message.Should().Be("Missing value at position 1");
+            }
+        }
+
+        [Fact]
+        public void throws_exception_when_wrong_type()
+        {
+            var tokenList = new TokenList("one");
+
+            try
+            {
+                tokenList.NextInt();
+            }
+            catch (TokenizerFailedException e)
+            {
+                e.Message.Should().Be("Expected integer at position 1, got 'one'");
+            }
+        }
     }
 }
