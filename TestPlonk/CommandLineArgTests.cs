@@ -72,6 +72,7 @@ namespace TestNeato
             var parser = new CommandLineParser();
             var stringVal = "original";
             var numberVal = -23;
+            var caughtFailure = false;
 
             parser.RegisterCommand("fluff")
                 .AddParameter(new Parameter("claw", Parameter.PrimitiveType.String))
@@ -82,11 +83,18 @@ namespace TestNeato
                 numberVal = parameters[1].AsInt();
             });
 
-            var ranSuccessfully = parser.Consume(new string[] { "fluff", "raggle" });
+            try
+            {
+                parser.Consume(new string[] { "fluff", "raggle" });
+            }
+            catch (CommandFailedException)
+            {
+                caughtFailure = true;
+            }
 
             stringVal.Should().Be("original");
             numberVal.Should().Be(-23);
-            ranSuccessfully.Should().BeFalse();
+            caughtFailure.Should().BeTrue();
         }
 
         [Fact]

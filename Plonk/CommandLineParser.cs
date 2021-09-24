@@ -19,21 +19,14 @@ namespace Neato
     {
         private readonly Dictionary<string, Command> registeredCommands = new Dictionary<string, Command>();
 
-        public bool Consume(string[] argArray)
+        public void Consume(string[] argArray)
         {
             var args = new TokenList(argArray);
             var commandName = args.NextString();
             if (registeredCommands.ContainsKey(commandName))
             {
                 var command = registeredCommands[commandName];
-                var wasSuccessful = command.Execute(args);
-
-                if (!wasSuccessful)
-                {
-                    Console.Error.WriteLine("usage: " + command.Usage());
-                }
-
-                return wasSuccessful;
+                command.Execute(args);
             }
             else
             {
@@ -46,6 +39,16 @@ namespace Neato
             var command = new Command(commandName);
             this.registeredCommands.Add(commandName, command);
             return command;
+        }
+    }
+
+    public class CommandFailedException : Exception
+    {
+        public Command Command { get; }
+
+        public CommandFailedException(string message, Command command) : base(message)
+        {
+            Command = command;
         }
     }
 
@@ -65,7 +68,7 @@ namespace Neato
         public readonly string commandName;
         public readonly List<Parameter> parameters = new List<Parameter>();
 
-        public bool Execute(TokenList args)
+        public void Execute(TokenList args)
         {
             try
             {
@@ -77,10 +80,8 @@ namespace Neato
             }
             catch (TokenizerFailedException e)
             {
-                return false;
+                throw new CommandFailedException(e.Message, this);
             }
-
-            return true;
         }
 
         public Command AddParameter(Parameter parameter)
