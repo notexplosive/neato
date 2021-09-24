@@ -53,8 +53,8 @@ namespace TestNeato
             var numberVal = -1;
 
             parser.RegisterCommand("fluff")
-                .AddParameter(new Parameter("crab", Parameter.PrimitiveType.Integer))
-                .AddParameter(new Parameter("claw", Parameter.PrimitiveType.String))
+                .AddParameter(Parameter.Int("crab"))
+                .AddParameter(Parameter.String("claw"))
                 .OnExecuted((parameters) =>
             {
                 numberVal = parameters[0].AsInt();
@@ -75,8 +75,8 @@ namespace TestNeato
             var caughtFailure = false;
 
             parser.RegisterCommand("fluff")
-                .AddParameter(new Parameter("claw", Parameter.PrimitiveType.String))
-                .AddParameter(new Parameter("crab", Parameter.PrimitiveType.Integer))
+                .AddParameter(Parameter.String("claw"))
+                .AddParameter(Parameter.Int("crab"))
                 .OnExecuted((parameters) =>
             {
                 stringVal = parameters[0].AsString();
@@ -102,9 +102,9 @@ namespace TestNeato
         {
             var command = new Command("fluff")
                 .AddParameter(
-                    new Parameter("fluffing amount", Parameter.PrimitiveType.Integer))
+                    Parameter.Int("fluffing amount"))
                 .AddParameter(
-                    new Parameter("name", Parameter.PrimitiveType.String));
+                    Parameter.String("name"));
 
             command.Usage().Should().Be("fluff <fluffing amount> <name>");
         }

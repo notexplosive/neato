@@ -13,7 +13,7 @@ namespace NeatoCLI
                 .OnExecuted((parameters) => { Console.WriteLine("Hello!"); });
 
             parser.RegisterCommand("tick")
-                .AddParameter(new Parameter("number of times", Parameter.PrimitiveType.Integer))
+                .AddParameter(Parameter.Int("number of times"))
                 .OnExecuted((parameters) =>
                 {
                     for (int i = 0; i < parameters[0].AsInt(); i++)

@@ -114,7 +114,7 @@ namespace Neato
 
     public class Parameter
     {
-        public enum PrimitiveType
+        private enum PrimitiveType
         {
             Integer,
             String
@@ -124,10 +124,20 @@ namespace Neato
         private readonly PrimitiveType primitiveType;
         private object value = null;
 
-        public Parameter(string name, PrimitiveType type)
+        private Parameter(string name, PrimitiveType type)
         {
             this.name = name;
             this.primitiveType = type;
+        }
+
+        public static Parameter Int(string name)
+        {
+            return new Parameter(name, PrimitiveType.Integer);
+        }
+
+        public static Parameter String(string name)
+        {
+            return new Parameter(name, PrimitiveType.String);
         }
 
         public void ExtractValue(TokenList args)

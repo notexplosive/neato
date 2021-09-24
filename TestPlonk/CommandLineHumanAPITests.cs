@@ -19,7 +19,7 @@ namespace TestNeato
             var api = new CommandLineHumanAPI(parser);
 
             parser.RegisterCommand("tick")
-                .AddParameter(new Parameter("number of times", Parameter.PrimitiveType.Integer));
+                .AddParameter(Parameter.Int("number of times"));
 
             api.UserInput("tick");
             api.NextErrorLine().Should().Be("Missing value at position 1");
@@ -33,11 +33,11 @@ namespace TestNeato
             var api = new CommandLineHumanAPI(parser);
 
             parser.RegisterCommand("tick")
-                .AddParameter(new Parameter("number of times", Parameter.PrimitiveType.Integer));
+                .AddParameter(Parameter.Int("number of times"));
             parser.RegisterCommand("tack")
-                .AddParameter(new Parameter("number of times", Parameter.PrimitiveType.Integer));
+                .AddParameter(Parameter.Int("number of times"));
             parser.RegisterCommand("foo")
-                .AddParameter(new Parameter("number of times", Parameter.PrimitiveType.Integer));
+                .AddParameter(Parameter.Int("number of times"));
 
             api.UserInput("tock");
             api.NextErrorLine().Should().Be("Unknown command 'tock'");
