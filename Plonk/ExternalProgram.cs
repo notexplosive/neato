@@ -49,7 +49,7 @@ namespace Neato
                 {
                     process.Start();
                     StreamReader standardReader = process.StandardOutput;
-                    StreamReader errorReader = process.StandardOutput;
+                    StreamReader errorReader = process.StandardError;
                     stdOutput = standardReader.ReadToEnd();
                     stdOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
@@ -82,7 +82,7 @@ namespace Neato
                 {
                     process.Start();
                     StreamReader standardReader = process.StandardOutput;
-                    StreamReader errorReader = process.StandardOutput;
+                    StreamReader errorReader = process.StandardError;
                     stdOutput = standardReader.ReadToEnd();
                     stdOutput += errorReader.ReadToEnd();
                     process.WaitForExit();

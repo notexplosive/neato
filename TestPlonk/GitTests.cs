@@ -35,5 +35,14 @@ namespace TestNeato
             new GitProgram(this.repoPath).Init();
             Directory.Exists(Path.Join(this.repoPath, ".git")).Should().BeTrue();
         }
+
+        [Fact]
+        public void git_log()
+        {
+            var git = new GitProgram(this.repoPath);
+            git.Init();
+
+            git.Log().Should().Be("fatal: your current branch 'master' does not have any commits yet");
+        }
     }
 }
