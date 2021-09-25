@@ -30,7 +30,7 @@ namespace TestNeato
         public void can_zip_directory()
         {
             var sevenZip = new SevenZipProgram();
-            sevenZip.SendToZip(directoryToZip, outputDirectory);
+            sevenZip.SendToZip(directoryToZip, outputDirectory, "output.zip");
 
             File.Exists(Path.Join(outputDirectory, "output.zip")).Should().BeTrue();
 
