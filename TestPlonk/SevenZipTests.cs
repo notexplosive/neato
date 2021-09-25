@@ -27,13 +27,23 @@ namespace TestNeato
         }
 
         [Fact]
-        public void can_zip_directory()
+        public void can_zip_directory_without_dot_zip()
+        {
+            var sevenZip = new SevenZipProgram();
+            sevenZip.SendToZip(directoryToZip, outputDirectory, "output");
+
+            var outputFile = Path.Join(outputDirectory, "output.zip");
+            File.Exists(outputFile).Should().BeTrue();
+        }
+
+        [Fact]
+        public void can_zip_directory_with_dot_zip()
         {
             var sevenZip = new SevenZipProgram();
             sevenZip.SendToZip(directoryToZip, outputDirectory, "output.zip");
 
-            File.Exists(Path.Join(outputDirectory, "output.zip")).Should().BeTrue();
-
+            var outputFile = Path.Join(outputDirectory, "output.zip");
+            File.Exists(outputFile).Should().BeTrue();
         }
 
         public void Dispose()

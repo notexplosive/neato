@@ -15,7 +15,15 @@ namespace Neato
 
         public ProgramOutput SendToZip(string buildOutputDirectory, string outputDirectory, string zipName)
         {
-            return RunWithArgs("a", "-r", Path.Join(outputDirectory, $"{zipName}.zip"), Path.Join(buildOutputDirectory, "*"));
+            var extensionToAdd = ".zip";
+            var givenExtension = Path.GetExtension(zipName);
+
+            if (givenExtension == extensionToAdd)
+            {
+                extensionToAdd = string.Empty;
+            }
+
+            return RunWithArgs("a", "-r", Path.Join(outputDirectory, $"{zipName}{extensionToAdd}"), Path.Join(buildOutputDirectory, "*"));
         }
     }
 }
