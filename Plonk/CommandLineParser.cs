@@ -84,7 +84,7 @@ namespace Neato
     {
         public Command Command { get; }
 
-        public CommandFailedException(Command command) : base()
+        public CommandFailedException(Command command, string message) : base(message)
         {
             Command = command;
         }
@@ -116,13 +116,13 @@ namespace Neato
                 }
                 executed?.Invoke(parameters);
             }
-            catch (TokenizerFailedException)
+            catch (TokenizerFailedException e)
             {
-                throw new CommandFailedException(this);
+                throw new CommandFailedException(this, e.Message);
             }
             catch (ArgumentOutOfRangeException)
             {
-                throw new CommandFailedException(this);
+                throw new CommandFailedException(this, "Malformed command");
             }
         }
 

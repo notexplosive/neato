@@ -116,6 +116,30 @@ namespace TestNeato
         }
 
         [Fact]
+        public void use_invalid_parameters_raises_error()
+        {
+            var parser = new CommandLineParser();
+            var caughtFailure = false;
+
+            parser.RegisterCommand("fluff")
+                .OnExecuted((parameters) =>
+            {
+                parameters[5].AsInt(); // Attempt to get a parameter we don't have
+            });
+
+            try
+            {
+                parser.Consume(new string[] { "fluff" });
+            }
+            catch (CommandFailedException)
+            {
+                caughtFailure = true;
+            }
+
+            caughtFailure.Should().BeTrue();
+        }
+
+        [Fact]
         public void command_tells_you_how_to_use_it()
         {
             var command = new Command("fluff")

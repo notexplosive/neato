@@ -75,5 +75,23 @@ namespace TestNeato
             api.NextErrorLine().Should().Be("Wrong number of arguments.");
             api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
+
+        [Fact]
+        public void malformed_command_raises_error()
+        {
+            var parser = new CommandLineParser();
+            var api = new CommandLineHumanAPI(parser);
+
+            parser.RegisterCommand("tick")
+                .OnExecuted((parameters) =>
+                {
+                    parameters[5].AsString();
+                })
+                ;
+
+            api.UserInput("tick");
+            api.NextErrorLine().Should().Be("Failed. Malformed command");
+            api.NextErrorLine().Should().Be("Usage: tick");
+        }
     }
 }
