@@ -10,33 +10,40 @@ namespace NeatoCLI
         {
             var parser = new CommandLineParser();
 
-            parser.RegisterCommand("package")
+            parser.RegisterCommand("package-zip")
                 .AddParameter(Parameter.String("path to csproj"))
-                .AddParameter(Parameter.String("exe|zip"))
+                .AddParameter(Parameter.String("destination"))
+                .AddParameter(Parameter.String("zip name"))
+                .OnExecuted((parameters) =>
+                {
+                    var dotnet = new DotnetProgram();
+                    var sevenZip = new SevenZipProgram();
+                    var localFiles = new FileManager(PathType.Relative, parameters[0].AsString());
+                    var outputDirectory = parameters[1].AsString();
+                    var zipName = parameters[2].AsString();
+
+                    Console.WriteLine("Packaging as zip");
+                    var buildOutputFiles = new FileManager(PathType.Absolute, Path.Join(outputDirectory, "neato-temp"));
+                    var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, buildOutputFiles);
+                    var sevenZipResult = sevenZip.SendToZip(buildOutputFiles.WorkingDirectory, outputDirectory, zipName);
+
+                    buildOutputFiles.RemoveDirectoryRecursive(new PathContext(PathType.Relative, "."));
+
+                    sevenZipResult.PrintToStdOut();
+                    dotnetResult.PrintToStdOut();
+                });
+
+            parser.RegisterCommand("make-special-exe")
+                .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
                 .OnExecuted((parameters) =>
                 {
                     var dotnet = new DotnetProgram();
                     var files = new FileManager(PathType.Relative, parameters[0].AsString());
-
-                    if (parameters[1].AsString() == "exe")
-                    {
-                        Console.WriteLine("Packaging as executable");
-                    }
-
-
                     var outputDirectory = parameters[2].AsString();
-                    var result = dotnet.RunWithArgs(
-                        "publish",
-                        files.WorkingDirectory,
-                        "-c", "Release",
-                        "-r", "win-x64",
-                        "/p:PublishReadyToRun=false",
-                        "/p:TieredCompilation=false",
-                        "/p:IncludeNativeLibrariesForSelfExtract=true",
-                        "--self-contained",
-                        "--output", outputDirectory);
 
+                    Console.WriteLine("Packaging as executable");
+                    var result = dotnet.PublishExe_Special(files.WorkingDirectory, outputDirectory);
                     result.PrintToStdOut();
                 });
 
