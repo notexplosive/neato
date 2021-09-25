@@ -109,6 +109,29 @@ namespace TestNeato
         }
 
         [Fact]
+        public void cannot_remove_directory_with_contents()
+        {
+            Directory.CreateDirectory(Path.Join(testPathFull, "temp"));
+
+            var existsBefore = Directory.Exists(testPathFull);
+            var fileSystem = new FileManager(PathType.Relative);
+            var caught = false;
+            try
+            {
+                fileSystem.RemoveDirectory(new PathContext(PathType.Absolute, testPathFull));
+            }
+            catch (DeleteFailedException)
+            {
+                caught = true;
+            }
+            var existsAfter = Directory.Exists(testPathFull);
+
+            existsBefore.Should().BeTrue();
+            existsAfter.Should().BeTrue();
+            caught.Should().BeTrue();
+        }
+
+        [Fact]
         public void can_recursively_remove_directories()
         {
             Directory.CreateDirectory(Path.Join(testPathFull, "temp"));

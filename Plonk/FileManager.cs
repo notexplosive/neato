@@ -13,6 +13,11 @@ namespace Neato
         Relative
     }
 
+    public class DeleteFailedException : Exception
+    {
+
+    }
+
     public class FileManager
     {
         public FileManager(PathType pathType)
@@ -48,7 +53,14 @@ namespace Neato
 
         public void RemoveDirectory(PathContext context)
         {
-            Directory.Delete(context.CalculatePath(WorkingDirectory));
+            try
+            {
+                Directory.Delete(context.CalculatePath(WorkingDirectory));
+            }
+            catch (IOException)
+            {
+                throw new DeleteFailedException();
+            }
         }
 
         public void RemoveDirectoryRecursive(PathContext context)
