@@ -29,8 +29,7 @@ namespace Neato
         public void Consume(string[] argArray)
         {
             var args = new TokenList(argArray);
-            var commandName = string.Empty;
-
+            string commandName;
             try
             {
                 commandName = args.NextString();
