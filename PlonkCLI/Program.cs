@@ -54,10 +54,10 @@ namespace NeatoCLI
                     var projectName = parameters[0].AsString();
                     var localFiles = new FileManager(PathType.Relative);
 
-                    var git = new GitProgram("."); // todo: make this repoPath
+                    var repoPath = Path.Join(localFiles.WorkingDirectory, projectName);
+                    var git = new GitProgram(repoPath);
                     var dotnet = new DotnetProgram();
 
-                    var repoPath = Path.Join(localFiles.WorkingDirectory, projectName);
                     if (Directory.Exists(repoPath))
                     {
                         Console.WriteLine("Project already exists");
