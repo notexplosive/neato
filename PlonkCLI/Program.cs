@@ -47,6 +47,12 @@ namespace NeatoCLI
                     result.PrintToStdOut();
                 });
 
+            parser.RegisterCommand("login")
+                .OnExecuted((parameters) =>
+                {
+                    new ButlerProgram().Login();
+                });
+
             parser.RegisterCommand("project")
                 .AddParameter(Parameter.String("project name"))
                 .OnExecuted((parameters) =>
