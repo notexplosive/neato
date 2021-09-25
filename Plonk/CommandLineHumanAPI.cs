@@ -35,6 +35,12 @@ namespace Neato
                 this.error.Add($"Commands: {parser.SupportedCommands()}");
                 return false;
             }
+            catch (CommandAbsentException)
+            {
+                this.error.Add($"Missing command.");
+                this.error.Add($"Commands: {parser.SupportedCommands()}");
+                return false;
+            }
 
             return true;
         }

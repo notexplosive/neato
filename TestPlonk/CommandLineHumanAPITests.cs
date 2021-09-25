@@ -43,5 +43,23 @@ namespace TestNeato
             api.NextErrorLine().Should().Be("Unknown command 'tock'");
             api.NextErrorLine().Should().Be("Commands: tick, tack, foo");
         }
+
+        [Fact]
+        public void output_usage_if_no_command()
+        {
+            var parser = new CommandLineParser();
+            var api = new CommandLineHumanAPI(parser);
+
+            parser.RegisterCommand("tick")
+                .AddParameter(Parameter.Int("number of times"));
+            parser.RegisterCommand("tack")
+                .AddParameter(Parameter.Int("number of times"));
+            parser.RegisterCommand("foo")
+                .AddParameter(Parameter.Int("number of times"));
+
+            api.UserInput();
+            api.NextErrorLine().Should().Be("Missing command.");
+            api.NextErrorLine().Should().Be("Commands: tick, tack, foo");
+        }
     }
 }
