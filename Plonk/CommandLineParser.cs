@@ -67,7 +67,7 @@ namespace Neato
     {
         public Command Command { get; }
 
-        public CommandFailedException(string message, Command command) : base(message)
+        public CommandFailedException(Command command) : base()
         {
             Command = command;
         }
@@ -99,9 +99,13 @@ namespace Neato
                 }
                 executed?.Invoke(parameters);
             }
-            catch (TokenizerFailedException e)
+            catch (TokenizerFailedException)
             {
-                throw new CommandFailedException(e.Message, this);
+                throw new CommandFailedException(this);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new CommandFailedException(this);
             }
         }
 
