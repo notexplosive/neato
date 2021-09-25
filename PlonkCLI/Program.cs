@@ -1,5 +1,6 @@
 ﻿using Neato;
 using System;
+using System.IO;
 
 namespace NeatoCLI
 {
@@ -9,19 +10,35 @@ namespace NeatoCLI
         {
             var parser = new CommandLineParser();
 
-            parser.RegisterCommand("wave")
-                .OnExecuted((parameters) => { Console.WriteLine("Hello!"); });
-
-            parser.RegisterCommand("tick")
-                .AddParameter(Parameter.Int("number of times"))
+            parser.RegisterCommand("package")
+                .AddParameter(Parameter.String("path to csproj"))
+                .AddParameter(Parameter.String("exe|zip"))
+                .AddParameter(Parameter.String("destination"))
                 .OnExecuted((parameters) =>
                 {
-                    for (int i = 0; i < parameters[0].AsInt(); i++)
-                    {
-                        Console.WriteLine("tick");
-                    }
-                });
+                    var dotnet = new DotnetProgram();
+                    var files = new FileManager(PathType.Relative, parameters[0].AsString());
 
+                    if (parameters[1].AsString() == "exe")
+                    {
+                        Console.WriteLine("Packaging as executable");
+                    }
+
+
+                    var outputDirectory = parameters[2].AsString();
+                    var result = dotnet.RunWithArgs(
+                        "publish",
+                        files.WorkingDirectory,
+                        "-c", "Release",
+                        "-r", "win-x64",
+                        "/p:PublishReadyToRun=false",
+                        "/p:TieredCompilation=false",
+                        "/p:IncludeNativeLibrariesForSelfExtract=true",
+                        "--self-contained",
+                        "--output", outputDirectory);
+
+                    result.PrintToStdOut();
+                });
 
             var api = new CommandLineHumanAPI(parser);
             api.UserInput(args);
