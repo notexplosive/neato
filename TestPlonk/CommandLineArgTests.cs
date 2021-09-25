@@ -31,6 +31,24 @@ namespace TestNeato
         }
 
         [Fact]
+        public void empty_args_raises_error()
+        {
+            var parser = new CommandLineParser();
+            var pass = false;
+
+            try
+            {
+                parser.Consume(new string[] { });
+            }
+            catch (CommandNotFoundException)
+            {
+                pass = true;
+            }
+
+            pass.Should().BeTrue();
+        }
+
+        [Fact]
         public void registered_command_runs_command_no_args()
         {
             var parser = new CommandLineParser();

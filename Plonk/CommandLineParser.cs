@@ -25,7 +25,17 @@ namespace Neato
         public void Consume(string[] argArray)
         {
             var args = new TokenList(argArray);
-            var commandName = args.NextString();
+            var commandName = string.Empty;
+
+            try
+            {
+                commandName = args.NextString();
+            }
+            catch (TokenizerFailedException)
+            {
+                throw new CommandNotFoundException("<empty>");
+            }
+
             if (registeredCommands.ContainsKey(commandName))
             {
                 var command = registeredCommands[commandName];
