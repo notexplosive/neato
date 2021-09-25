@@ -53,6 +53,15 @@ namespace NeatoCLI
                     new ButlerProgram().Login();
                 });
 
+            parser.RegisterCommand("status")
+                .OnExecuted((parameters) =>
+                {
+                    Console.WriteLine(new ButlerProgram().Version().wasSuccessful ? ">> butler is installed" : "!! butler is not installed");
+                    Console.WriteLine(new GitProgram(".").Version().wasSuccessful ? ">> git is installed" : "!! git is not installed");
+                    Console.WriteLine(new DotnetProgram().Version().wasSuccessful ? ">> dotnet is installed" : "!! dotnet is not installed");
+                    Console.WriteLine(new SevenZipProgram().Run().wasSuccessful ? ">> 7zip is installed" : "!! 7zip is not installed");
+                });
+
             parser.RegisterCommand("project")
                 .AddParameter(Parameter.String("project name"))
                 .OnExecuted((parameters) =>

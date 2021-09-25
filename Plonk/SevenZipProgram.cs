@@ -25,5 +25,10 @@ namespace Neato
 
             return RunWithArgs("a", "-r", Path.Join(outputDirectory, $"{zipName}{extensionToAdd}"), Path.Join(buildOutputDirectory, "*"));
         }
+
+        public ProgramOutput Run()
+        {
+            return RunWithArgs();
+        }
     }
 }

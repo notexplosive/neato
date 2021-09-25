@@ -24,5 +24,10 @@ namespace Neato
         {
             return RunWithArgsAt(this.workingDirectory, "log").stdOutput.Trim();
         }
+
+        public ProgramOutput Version()
+        {
+            return RunWithArgs("--version");
+        }
     }
 }

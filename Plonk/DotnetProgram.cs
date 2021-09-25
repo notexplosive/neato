@@ -44,5 +44,10 @@ namespace Neato
                         "--self-contained",
                         "--output", outputFile.WorkingDirectory);
         }
+
+        public ProgramOutput Version()
+        {
+            return RunWithArgs("--version");
+        }
     }
 }

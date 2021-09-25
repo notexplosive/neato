@@ -21,5 +21,10 @@ namespace Neato
         {
             RunWithArgs("login");
         }
+
+        public ProgramOutput Version()
+        {
+            return RunWithArgs("--version");
+        }
     }
 }
