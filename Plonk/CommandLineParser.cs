@@ -15,6 +15,10 @@ namespace Neato
         {
             CommandName = commandName;
         }
+    }
+
+    public class CommandAbsentException : Exception
+    {
 
     }
 
@@ -33,7 +37,7 @@ namespace Neato
             }
             catch (TokenizerFailedException)
             {
-                throw new UnknownCommandException("<empty>");
+                throw new CommandAbsentException();
             }
 
             if (registeredCommands.ContainsKey(commandName))

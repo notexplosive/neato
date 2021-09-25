@@ -40,7 +40,7 @@ namespace TestNeato
             {
                 parser.Consume(new string[] { });
             }
-            catch (UnknownCommandException)
+            catch (CommandAbsentException)
             {
                 pass = true;
             }
