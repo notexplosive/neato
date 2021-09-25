@@ -1,0 +1,1 @@
+dotnet publish PlonkCLI\NeatoCLI.csproj -c Release -r win-x64 /p:PublishReadyToRun=false /p:TieredCompilation=false /p:PublishSingleFile=true --self-contained --output C:\Neato
