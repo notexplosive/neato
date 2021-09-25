@@ -22,7 +22,7 @@ namespace TestNeato
                 .AddParameter(Parameter.Int("number of times"));
 
             api.UserInput("tick");
-            api.NextErrorLine().Should().Be("Missing value at position 1");
+            api.NextErrorLine().Should().Be("Failed.");
             api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
 

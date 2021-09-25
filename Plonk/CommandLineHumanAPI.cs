@@ -25,7 +25,7 @@ namespace Neato
             }
             catch (CommandFailedException e)
             {
-                this.error.Add(e.Message);
+                this.error.Add("Failed.");
                 this.error.Add($"Usage: {e.Command.Usage()}");
                 return false;
             }
