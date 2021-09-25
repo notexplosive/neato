@@ -8,8 +8,16 @@ namespace Neato
 {
     public class GitProgram : ExternalProgram
     {
-        public GitProgram() : base("git")
+        private readonly string workingDirectory;
+
+        public GitProgram(string workingDirectory) : base("git")
         {
+            this.workingDirectory = workingDirectory;
+        }
+
+        public void Init()
+        {
+            RunWithArgsAt(this.workingDirectory, "init");
         }
     }
 }

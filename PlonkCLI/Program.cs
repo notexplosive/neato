@@ -54,7 +54,7 @@ namespace NeatoCLI
                     var projectName = parameters[0].AsString();
                     var localFiles = new FileManager(PathType.Relative);
 
-                    var git = new GitProgram();
+                    var git = new GitProgram("."); // todo: make this repoPath
                     var dotnet = new DotnetProgram();
 
                     var repoPath = Path.Join(localFiles.WorkingDirectory, projectName);

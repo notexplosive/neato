@@ -41,7 +41,7 @@ namespace TestNeato
         [Fact]
         public void git_is_installed()
         {
-            var program = new GitProgram();
+            var program = new GitProgram(".");
             var result = program.RunWithArgs("status");
 
             result.wasSuccessful.Should().Be(true);

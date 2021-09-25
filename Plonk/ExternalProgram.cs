@@ -61,5 +61,39 @@ namespace Neato
             }
             return new ProgramOutput(wasSuccessful, stdOutput);
         }
+        public ProgramOutput RunWithArgsAt(string workingDirectory, params string[] argumentList)
+        {
+            var stdOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+                + "\n" + "in working directory: " + workingDirectory;
+            var wasSuccessful = true;
+            using (Process process = new Process())
+            {
+                process.StartInfo.WorkingDirectory = workingDirectory;
+                process.StartInfo.FileName = runPath;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                foreach (var argument in argumentList)
+                {
+                    process.StartInfo.ArgumentList.Add(argument);
+                }
+
+                try
+                {
+                    process.Start();
+                    StreamReader standardReader = process.StandardOutput;
+                    StreamReader errorReader = process.StandardOutput;
+                    stdOutput = standardReader.ReadToEnd();
+                    stdOutput += errorReader.ReadToEnd();
+                    process.WaitForExit();
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    wasSuccessful = false;
+                }
+            }
+            return new ProgramOutput(wasSuccessful, stdOutput);
+        }
     }
 }
+
