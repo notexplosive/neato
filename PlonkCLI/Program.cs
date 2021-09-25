@@ -47,6 +47,69 @@ namespace NeatoCLI
                     result.PrintToStdOut();
                 });
 
+            parser.RegisterCommand("project")
+                .AddParameter(Parameter.String("project name"))
+                .OnExecuted((parameters) =>
+                {
+                    var projectName = parameters[0].AsString();
+                    var localFiles = new FileManager(PathType.Relative);
+
+                    var git = new GitProgram();
+                    var dotnet = new DotnetProgram();
+
+                    var repoPath = Path.Join(localFiles.WorkingDirectory, projectName);
+                    if (Directory.Exists(repoPath))
+                    {
+                        Console.WriteLine("Project already exists");
+                        return;
+                    }
+
+                    localFiles.MakeDirectory(new PathContext(PathType.Relative, projectName));
+
+                    var oldWorkingDir = Directory.GetCurrentDirectory();
+                    Directory.SetCurrentDirectory(repoPath);
+
+                    Console.WriteLine("Creating Repo");
+                    git.RunWithArgs("init");
+
+                    Console.WriteLine("Downloading Machina");
+                    git.RunWithArgs("submodule", "add", "https://github.com/notexplosive/machina.git");
+
+                    Console.WriteLine("Basic MonoGame Setup");
+                    dotnet.RunWithArgs("new", "--install", "MonoGame.Templates.CSharp");
+                    dotnet.RunWithArgs("tool", "install", "--global", "dotnet-mgcb-editor");
+                    new ExternalProgram("mgcb-editor").RunWithArgs("--register");
+
+                    Console.WriteLine("Creating Template");
+                    dotnet.RunWithArgs("new", "mgdesktopgl", "-o", projectName);
+
+                    Console.WriteLine("Creating Solution");
+                    dotnet.RunWithArgs("new", "sln");
+
+                    Console.WriteLine("Add projects to Solution");
+                    dotnet.RunWithArgs("sln", "add", projectName);
+                    var machinaLocalPath = Path.Join(".", "machina", "Machina");
+                    dotnet.RunWithArgs("sln", "add", machinaLocalPath);
+                    dotnet.RunWithArgs("sln", "add", Path.Join(".", "machina", "TestMachina"));
+
+                    Console.WriteLine("Add Machina to Project");
+                    dotnet.RunWithArgs("add", projectName, "reference", machinaLocalPath);
+
+                    Console.WriteLine("Copying Files");
+                    localFiles.Copy(
+                        new PathContext(PathType.Relative, Path.Join(projectName, "machina", ".gitignore")),
+                        new PathContext(PathType.Relative, Path.Join(projectName, ".gitignore")));
+                    localFiles.Copy(
+                        new PathContext(PathType.Relative, Path.Join(projectName, "machina", "game-readme.md")),
+                        new PathContext(PathType.Relative, Path.Join(projectName, "readme.md")));
+                    git.RunWithArgs("add", ".");
+                    git.RunWithArgs("commit", "-m", "(Machina:Automated) Initial Commit");
+
+                    Directory.SetCurrentDirectory(oldWorkingDir);
+                    Console.WriteLine("Done");
+                })
+                ;
+
             var api = new CommandLineHumanAPI(parser);
             api.UserInput(args);
 

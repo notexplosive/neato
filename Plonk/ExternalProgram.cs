@@ -39,6 +39,7 @@ namespace Neato
                 process.StartInfo.FileName = runPath;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
                 foreach (var argument in argumentList)
                 {
                     process.StartInfo.ArgumentList.Add(argument);
@@ -47,8 +48,10 @@ namespace Neato
                 try
                 {
                     process.Start();
-                    StreamReader reader = process.StandardOutput;
-                    stdOutput = reader.ReadToEnd();
+                    StreamReader standardReader = process.StandardOutput;
+                    StreamReader errorReader = process.StandardOutput;
+                    stdOutput = standardReader.ReadToEnd();
+                    stdOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
                 }
                 catch (System.ComponentModel.Win32Exception)
