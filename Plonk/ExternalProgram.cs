@@ -14,6 +14,11 @@ namespace Neato
             this.stdOutput = output;
             this.wasSuccessful = wasSuccessful;
         }
+
+        public void PrintToStdOut()
+        {
+            Console.WriteLine(this.stdOutput);
+        }
     }
 
     public class ExternalProgram
