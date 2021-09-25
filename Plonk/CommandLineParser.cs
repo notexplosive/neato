@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Neato
 {
-    public class CommandNotFoundException : Exception
+    public class UnknownCommandException : Exception
     {
         public string CommandName { get; }
 
-        public CommandNotFoundException(string commandName) : base()
+        public UnknownCommandException(string commandName) : base()
         {
             CommandName = commandName;
         }
@@ -33,7 +33,7 @@ namespace Neato
             }
             catch (TokenizerFailedException)
             {
-                throw new CommandNotFoundException("<empty>");
+                throw new UnknownCommandException("<empty>");
             }
 
             if (registeredCommands.ContainsKey(commandName))
@@ -43,7 +43,7 @@ namespace Neato
             }
             else
             {
-                throw new CommandNotFoundException(commandName);
+                throw new UnknownCommandException(commandName);
             }
         }
 

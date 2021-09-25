@@ -29,7 +29,7 @@ namespace Neato
                 this.error.Add($"Usage: {e.Command.Usage()}");
                 return false;
             }
-            catch (CommandNotFoundException e)
+            catch (UnknownCommandException e)
             {
                 this.error.Add($"Unknown command '{e.CommandName}'");
                 this.error.Add($"Commands: {parser.SupportedCommands()}");

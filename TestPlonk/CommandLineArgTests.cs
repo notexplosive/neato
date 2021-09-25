@@ -22,7 +22,7 @@ namespace TestNeato
             {
                 parser.Consume(new string[] { "--spujb" });
             }
-            catch (CommandNotFoundException)
+            catch (UnknownCommandException)
             {
                 pass = true;
             }
@@ -40,7 +40,7 @@ namespace TestNeato
             {
                 parser.Consume(new string[] { });
             }
-            catch (CommandNotFoundException)
+            catch (UnknownCommandException)
             {
                 pass = true;
             }
