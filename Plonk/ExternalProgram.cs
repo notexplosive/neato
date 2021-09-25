@@ -32,7 +32,7 @@ namespace Neato
 
         public ProgramOutput RunWithArgs(params string[] argumentList)
         {
-            var stdOutput = string.Empty;
+            var stdOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList);
             var wasSuccessful = true;
             using (Process process = new Process())
             {

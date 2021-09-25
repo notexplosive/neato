@@ -25,7 +25,7 @@ namespace TestNeato
             var program = new ExternalProgram("fjbnlazb");
             var result = program.RunWithArgs();
 
-            result.stdOutput.Should().Be("");
+            result.stdOutput.Should().Be("ran command: fjbnlazb");
             result.wasSuccessful.Should().Be(false);
         }
 
