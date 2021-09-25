@@ -105,7 +105,7 @@ namespace TestNeato
             {
                 parser.Consume(new string[] { "fluff", "raggle" });
             }
-            catch (CommandFailedException)
+            catch (WrongNumberOfArgsException)
             {
                 caughtFailure = true;
             }

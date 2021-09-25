@@ -13,7 +13,7 @@ namespace TestNeato
     public class CommandLineHumanAPITests
     {
         [Fact]
-        public void output_usage_if_command_args_invalid()
+        public void output_usage_if_command_missing_args()
         {
             var parser = new CommandLineParser();
             var api = new CommandLineHumanAPI(parser);
@@ -22,7 +22,7 @@ namespace TestNeato
                 .AddParameter(Parameter.Int("number of times"));
 
             api.UserInput("tick");
-            api.NextErrorLine().Should().Be("Failed.");
+            api.NextErrorLine().Should().Be("Wrong number of arguments.");
             api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
 
@@ -60,6 +60,20 @@ namespace TestNeato
             api.UserInput();
             api.NextErrorLine().Should().Be("Missing command.");
             api.NextErrorLine().Should().Be("Commands: tick, tack, foo");
+        }
+
+        [Fact]
+        public void output_usage_if_too_many_args()
+        {
+            var parser = new CommandLineParser();
+            var api = new CommandLineHumanAPI(parser);
+
+            parser.RegisterCommand("tick")
+                .AddParameter(Parameter.Int("number of times"));
+
+            api.UserInput("tick", "3", "10", "8");
+            api.NextErrorLine().Should().Be("Wrong number of arguments.");
+            api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
     }
 }

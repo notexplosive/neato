@@ -41,6 +41,15 @@ namespace Neato
                 this.error.Add($"Commands: {parser.SupportedCommands()}");
                 return false;
             }
+            catch (WrongNumberOfArgsException e)
+            {
+                this.error.Add($"Wrong number of arguments.");
+                this.error.Add($"Usage: {e.Command.Usage()}");
+            }
+            catch (Exception e)
+            {
+                this.error.Add($"Generic failure: {e.Message}");
+            }
 
             return true;
         }

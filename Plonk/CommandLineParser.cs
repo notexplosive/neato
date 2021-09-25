@@ -17,6 +17,16 @@ namespace Neato
         }
     }
 
+    public class WrongNumberOfArgsException : Exception
+    {
+        public Command Command { get; }
+
+        public WrongNumberOfArgsException(Command command) : base()
+        {
+            Command = command;
+        }
+    }
+
     public class CommandAbsentException : Exception
     {
 
@@ -42,7 +52,14 @@ namespace Neato
             if (registeredCommands.ContainsKey(commandName))
             {
                 var command = registeredCommands[commandName];
-                command.Execute(args);
+                if (args.Remaining().Count() == command.parameters.Count())
+                {
+                    command.Execute(args);
+                }
+                else
+                {
+                    throw new WrongNumberOfArgsException(command);
+                }
             }
             else
             {
