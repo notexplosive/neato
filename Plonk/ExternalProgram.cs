@@ -46,6 +46,7 @@ namespace Neato
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
                 foreach (var argument in argumentList)
                 {
                     process.StartInfo.ArgumentList.Add(argument);
@@ -56,6 +57,10 @@ namespace Neato
                     process.Start();
                     StreamReader standardReader = process.StandardOutput;
                     StreamReader errorReader = process.StandardError;
+
+                    process.OutputDataReceived += Process_OutputDataReceived;
+                    process.ErrorDataReceived += Process_OutputDataReceived;
+
                     allOutput = standardReader.ReadToEnd();
                     allOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
@@ -66,6 +71,11 @@ namespace Neato
                 }
             }
             return new ProgramOutput(wasSuccessful, allOutput);
+        }
+
+        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.Write(e.Data);
         }
     }
 }
