@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,16 @@ namespace Neato
         public ProgramOutput RunQuit()
         {
             return RunWithArgs("+quit");
+        }
+
+        public ProgramOutput Login(string steamUsername)
+        {
+            return RunWithArgs($"+login {steamUsername}");
+        }
+
+        public ProgramOutput Deploy(string fullPathToVDF)
+        {
+            return RunWithArgs("+run_app_build", fullPathToVDF, "+quit");
         }
     }
 }

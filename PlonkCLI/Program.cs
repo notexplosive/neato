@@ -1,5 +1,6 @@
 ﻿using Neato;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace NeatoCLI
@@ -52,6 +53,22 @@ namespace NeatoCLI
                     dotnetResult.PrintToStdOut();
                 });
 
+            parser.RegisterCommand("normal-publish")
+                .AddParameter(Parameter.String("path to csproj"))
+                .AddParameter(Parameter.String("destination"))
+                .OnExecuted((parameters) =>
+                {
+                    var dotnet = new DotnetProgram();
+                    var sevenZip = new SevenZipProgram();
+                    var localFiles = new FileManager(PathType.Relative, parameters[0].AsString());
+                    var outputDirectory = parameters[1].AsString();
+
+                    Logger.Info($"Publishing to {outputDirectory}, this might take a while");
+                    var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, new FileManager(PathType.Absolute, outputDirectory));
+
+                    dotnetResult.PrintToStdOut();
+                });
+
             parser.RegisterCommand("make-special-exe")
                 .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
@@ -66,10 +83,17 @@ namespace NeatoCLI
                     result.PrintToStdOut();
                 });
 
-            parser.RegisterCommand("login")
+            parser.RegisterCommand("itch-login")
                 .OnExecuted((parameters) =>
                 {
                     new ButlerProgram().Login();
+                });
+
+            parser.RegisterCommand("steam-login")
+                .AddParameter(Parameter.String("username"))
+                .OnExecuted((parameters) =>
+                {
+                    new SteamCmdProgram().Login(parameters[0].AsString());
                 });
 
             parser.RegisterCommand("status")
@@ -92,6 +116,56 @@ namespace NeatoCLI
                     LogInstallStatus("dotnet", () => new DotnetProgram().Version().wasSuccessful);
                     LogInstallStatus("7zip", () => new SevenZipProgram().Run().wasSuccessful);
                     LogInstallStatus("steamcmd", () => new SteamCmdProgram().RunQuit().wasSuccessful);
+                });
+
+            parser.RegisterCommand("find-vdf")
+                .OnExecuted((parameters) =>
+                {
+                    var files = GetAllVdfsInDirectory();
+
+                    if (files.Count == 0)
+                    {
+                        Logger.Warning("No .vdf files found");
+                    }
+                    else
+                    {
+                        foreach (var file in files)
+                        {
+                            Logger.Info(file);
+                        }
+                    }
+                });
+
+            parser.RegisterCommand("deploy-steam")
+                .AddParameter(Parameter.String("username"))
+                .AddParameter(Parameter.String("directory"))
+                .OnExecuted((parameters) =>
+                {
+                    var directory = parameters[0].AsString();
+                    var username = parameters[1].AsString();
+                    var files = GetAllVdfsInDirectory();
+
+                    if (files.Count == 1)
+                    {
+                        var vdfFile = files[0];
+                        Logger.Info($"Found vdf: {vdfFile}");
+                        var steamCmd = new SteamCmdProgram();
+
+                        Logger.Info("Logging in, if this hangs then login to steam via steamcmd");
+                        var loginResult = steamCmd.Login(username);
+                        Logger.Info(loginResult.stdOutput);
+                        var deployResult = steamCmd.Deploy(vdfFile);
+
+                        Logger.Info(deployResult.stdOutput);
+                    }
+                    else if (files.Count == 0)
+                    {
+                        Logger.Error("No .vdf files found");
+                    }
+                    else
+                    {
+                        Logger.Error("Found multiple .vdf files, unsure which one to use");
+                    }
                 });
 
             parser.RegisterCommand("deploy-itch")
@@ -183,6 +257,20 @@ namespace NeatoCLI
                 Console.Error.WriteLine($"💢 {error}");
                 error = api.NextErrorLine();
             }
+        }
+
+        public static List<string> GetAllVdfsInDirectory()
+        {
+            var enumerated = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.vdf");
+
+            var files = new List<string>();
+
+            foreach (var en in enumerated)
+            {
+                files.Add(en);
+            }
+
+            return files;
         }
     }
 }
