@@ -197,32 +197,35 @@ namespace NeatoCLI
 
                     var oldWorkingDir = Directory.GetCurrentDirectory();
                     Directory.SetCurrentDirectory(repoPath);
+                    var outputLevel = OutputLevel.Suppress;
 
                     Logger.Info("Creating Repo");
-                    git.RunWithArgs(OutputLevel.Suppress, "init");
+                    git.RunWithArgs(outputLevel, "init");
 
                     Logger.Info("Downloading Machina");
-                    git.RunWithArgs(OutputLevel.Suppress, "submodule", "add", "https://github.com/notexplosive/machina.git");
+                    git.RunWithArgs(outputLevel, "submodule", "add", "https://github.com/notexplosive/machina.git");
 
-                    Logger.Info("Basic MonoGame Setup");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "--install", "MonoGame.Templates.CSharp");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "tool", "install", "--global", "dotnet-mgcb-editor");
-                    new ExternalProgram("mgcb-editor").RunWithArgs(OutputLevel.Suppress, "--register");
+                    Logger.Info("Installing Monogame Template");
+                    dotnet.RunWithArgs(outputLevel, "new", "--install", "MonoGame.Templates.CSharp");
+                    Logger.Info("Installing Content Editor tool");
+                    dotnet.RunWithArgs(outputLevel, "tool", "install", "--global", "dotnet-mgcb-editor");
+                    Logger.Info("Registering Content Editor tool");
+                    new ExternalProgram("mgcb-editor").RunWithArgs(outputLevel, "--register");
 
                     Logger.Info("Creating Template");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "mgdesktopgl", "-o", projectName);
+                    dotnet.RunWithArgs(outputLevel, "new", "mgdesktopgl", "-o", projectName);
 
                     Logger.Info("Creating Solution");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "sln");
+                    dotnet.RunWithArgs(outputLevel, "new", "sln");
 
                     Logger.Info("Add projects to Solution");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", projectName);
+                    dotnet.RunWithArgs(outputLevel, "sln", "add", projectName);
                     var machinaLocalPath = Path.Join(".", "machina", "Machina");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", machinaLocalPath);
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", Path.Join(".", "machina", "TestMachina"));
+                    dotnet.RunWithArgs(outputLevel, "sln", "add", machinaLocalPath);
+                    dotnet.RunWithArgs(outputLevel, "sln", "add", Path.Join(".", "machina", "TestMachina"));
 
                     Logger.Info("Add Machina to Project");
-                    dotnet.RunWithArgs(OutputLevel.Suppress, "add", projectName, "reference", machinaLocalPath);
+                    dotnet.RunWithArgs(outputLevel, "add", projectName, "reference", machinaLocalPath);
 
                     Logger.Info("Copying Files");
                     localFiles.Copy(
@@ -231,11 +234,15 @@ namespace NeatoCLI
                     localFiles.Copy(
                         new PathContext(PathType.Relative, Path.Join(projectName, "machina", "game-readme.md")),
                         new PathContext(PathType.Relative, Path.Join(projectName, "readme.md")));
-                    git.RunWithArgs(OutputLevel.Suppress, "add", ".");
-                    git.RunWithArgs(OutputLevel.Suppress, "commit", "-m", "(Machina:Automated) Initial Commit");
+                    git.RunWithArgs(outputLevel, "add", ".");
+                    git.RunWithArgs(outputLevel, "commit", "-m", "(Machina:Automated) Initial Commit");
 
                     Directory.SetCurrentDirectory(oldWorkingDir);
-                    Logger.Info("Done");
+                    Logger.Info("Done.");
+                    Logger.Warning("You still have some manual steps!");
+                    Logger.Warning($"\t- Replace the default Game1.cs and Program.cs with the Machina boilerplate");
+                    Logger.Warning($"\t- Add MachinaAssets.shproj {Path.Join(".", "machina", "MachinaAssets")} to the sln");
+                    Logger.Warning($"\t- Add a shared project reference of MachinaAssets to your game.");
                 })
                 ;
 

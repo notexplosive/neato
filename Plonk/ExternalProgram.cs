@@ -63,6 +63,14 @@ namespace Neato
                 try
                 {
                     process.Start();
+
+                    if (outputLevel == OutputLevel.Suppress)
+                    {
+                        // Flush the buffers
+                        process.StandardOutput.ReadToEnd();
+                        process.StandardError.ReadToEnd();
+                    }
+
                     process.WaitForExit();
                 }
                 catch (System.ComponentModel.Win32Exception)
