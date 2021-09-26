@@ -21,7 +21,7 @@ namespace Neato
 
         public ProgramOutput Login(string steamUsername)
         {
-            return RunWithArgs($"+login {steamUsername}");
+            return RunWithArgs($"+login {steamUsername}", "+quit");
         }
 
         public ProgramOutput Deploy(string fullPathToVDF)

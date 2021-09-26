@@ -7,18 +7,11 @@ namespace Neato
 {
     public class ProgramOutput
     {
-        public readonly string stdOutput;
         public readonly bool wasSuccessful;
 
-        public ProgramOutput(bool wasSuccessful, string output)
+        public ProgramOutput(bool wasSuccessful)
         {
-            this.stdOutput = output;
             this.wasSuccessful = wasSuccessful;
-        }
-
-        public void PrintToStdOut()
-        {
-            Console.WriteLine(this.stdOutput);
         }
     }
 
@@ -37,17 +30,14 @@ namespace Neato
         }
         public ProgramOutput RunWithArgsAt(string workingDirectory, params string[] argumentList)
         {
-            var allOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
-                + "\n" + "in working directory: " + workingDirectory;
+            Console.WriteLine("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+                + "\n" + "in working directory: " + workingDirectory);
             var wasSuccessful = true;
             using (Process process = new Process())
             {
                 process.StartInfo.WorkingDirectory = workingDirectory;
                 process.StartInfo.FileName = runPath;
                 process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
                 foreach (var argument in argumentList)
                 {
                     process.StartInfo.ArgumentList.Add(argument);
@@ -56,14 +46,6 @@ namespace Neato
                 try
                 {
                     process.Start();
-                    StreamReader standardReader = process.StandardOutput;
-                    StreamReader errorReader = process.StandardError;
-
-                    process.OutputDataReceived += Process_OutputDataReceived;
-                    process.ErrorDataReceived += Process_OutputDataReceived;
-
-                    allOutput = standardReader.ReadToEnd();
-                    allOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
                 }
                 catch (System.ComponentModel.Win32Exception)
@@ -71,7 +53,7 @@ namespace Neato
                     wasSuccessful = false;
                 }
             }
-            return new ProgramOutput(wasSuccessful, allOutput);
+            return new ProgramOutput(wasSuccessful);
         }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)

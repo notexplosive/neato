@@ -48,9 +48,6 @@ namespace NeatoCLI
                     var sevenZipResult = sevenZip.SendToZip(buildOutputFiles.WorkingDirectory, outputDirectory, zipName);
 
                     buildOutputFiles.RemoveDirectoryRecursive(new PathContext(PathType.Relative, "."));
-
-                    sevenZipResult.PrintToStdOut();
-                    dotnetResult.PrintToStdOut();
                 });
 
             parser.RegisterCommand("normal-publish")
@@ -65,8 +62,6 @@ namespace NeatoCLI
 
                     Logger.Info($"Publishing to {outputDirectory}, this might take a while");
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, new FileManager(PathType.Absolute, outputDirectory));
-
-                    dotnetResult.PrintToStdOut();
                 });
 
             parser.RegisterCommand("make-special-exe")
@@ -80,7 +75,6 @@ namespace NeatoCLI
 
                     Logger.Info("Packaging as executable");
                     var result = dotnet.PublishExe_Special(files.WorkingDirectory, outputDirectory);
-                    result.PrintToStdOut();
                 });
 
             parser.RegisterCommand("itch-login")
@@ -93,6 +87,7 @@ namespace NeatoCLI
                 .AddParameter(Parameter.String("username"))
                 .OnExecuted((parameters) =>
                 {
+                    Logger.Info($"Logging into steam as {parameters[0].AsString()}");
                     new SteamCmdProgram().Login(parameters[0].AsString());
                 });
 
@@ -153,10 +148,7 @@ namespace NeatoCLI
 
                         Logger.Info("Logging in, if this hangs then login to steam via steamcmd");
                         var loginResult = steamCmd.Login(username);
-                        Logger.Info(loginResult.stdOutput);
                         var deployResult = steamCmd.Deploy(vdfFile);
-
-                        Logger.Info(deployResult.stdOutput);
                     }
                     else if (files.Count == 0)
                     {
@@ -181,7 +173,6 @@ namespace NeatoCLI
                     var channel = parameters[3].AsString();
                     var butler = new ButlerProgram();
                     var result = butler.Push(directoryToUpload, itchUrl, gameUrl, channel);
-                    Logger.Info(result.stdOutput);
                 })
                 ;
 

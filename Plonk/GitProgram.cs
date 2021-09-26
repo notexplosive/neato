@@ -20,11 +20,6 @@ namespace Neato
             RunWithArgsAt(this.workingDirectory, "init");
         }
 
-        public string Log()
-        {
-            return RunWithArgsAt(this.workingDirectory, "log").stdOutput.Trim();
-        }
-
         public ProgramOutput Version()
         {
             return RunWithArgs("--version");
