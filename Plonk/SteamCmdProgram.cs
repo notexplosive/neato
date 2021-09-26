@@ -21,12 +21,12 @@ namespace Neato
 
         public ProgramOutput Login(string steamUsername)
         {
-            return RunWithArgs(OutputLevel.Allow, $"+login {steamUsername}", "+quit");
+            return RunWithArgs(OutputLevel.Allow, "+login", $"{steamUsername}", "+quit");
         }
 
-        public ProgramOutput Deploy(string fullPathToVDF)
+        public ProgramOutput Deploy(string steamUsername, string fullPathToVDF)
         {
-            return RunWithArgs(OutputLevel.Allow, "+run_app_build", fullPathToVDF, "+quit");
+            return RunWithArgs(OutputLevel.Allow, "+login", $"{steamUsername}", "+run_app_build", fullPathToVDF, "+quit");
         }
 
         public bool Exists()

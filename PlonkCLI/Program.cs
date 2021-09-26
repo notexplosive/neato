@@ -146,9 +146,7 @@ namespace NeatoCLI
                         Logger.Info($"Found vdf: {vdfFile}");
                         var steamCmd = new SteamCmdProgram();
 
-                        Logger.Info("Logging in, if this hangs then login to steam via steamcmd");
-                        var loginResult = steamCmd.Login(username);
-                        var deployResult = steamCmd.Deploy(vdfFile);
+                        var deployResult = steamCmd.Deploy(username, vdfFile);
                     }
                     else if (files.Count == 0)
                     {
