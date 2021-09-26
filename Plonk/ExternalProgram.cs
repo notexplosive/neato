@@ -39,7 +39,7 @@ namespace Neato
         {
             if (outputLevel == OutputLevel.Allow)
             {
-                Console.WriteLine("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+                Logger.Info("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
                     + "\n" + "in working directory: " + workingDirectory);
             }
             var wasSuccessful = true;
