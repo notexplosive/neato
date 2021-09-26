@@ -62,6 +62,23 @@ namespace NeatoCLI
                     Console.WriteLine(new SevenZipProgram().Run().wasSuccessful ? ">> 7zip is installed" : "!! 7zip is not installed");
                 });
 
+            parser.RegisterCommand("deploy-itch")
+                .AddParameter(Parameter.String("directory"))
+                .AddParameter(Parameter.String("itch url"))
+                .AddParameter(Parameter.String("game url"))
+                .AddParameter(Parameter.String("channel"))
+                .OnExecuted((parameters) =>
+                {
+                    var directoryToUpload = parameters[0].AsString();
+                    var itchUrl = parameters[1].AsString();
+                    var gameUrl = parameters[2].AsString();
+                    var channel = parameters[3].AsString();
+                    var butler = new ButlerProgram();
+                    var result = butler.Push(directoryToUpload, itchUrl, gameUrl, channel);
+                    Console.WriteLine(result.stdOutput);
+                })
+                ;
+
             parser.RegisterCommand("project")
                 .AddParameter(Parameter.String("project name"))
                 .OnExecuted((parameters) =>

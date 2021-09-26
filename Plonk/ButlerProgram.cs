@@ -26,5 +26,10 @@ namespace Neato
         {
             return RunWithArgs("--version");
         }
+
+        public ProgramOutput Push(string directoryToUpload, string itchUrl, string gameUrl, string channel)
+        {
+            return RunWithArgs("push", directoryToUpload, $"{itchUrl}/{gameUrl}:{channel}");
+        }
     }
 }
