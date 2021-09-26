@@ -15,12 +15,12 @@ namespace Neato
 
         public static void Error(string message)
         {
-            Console.WriteLine($"💢 {message}");
+            Console.WriteLine($"🟥 {message}");
         }
 
         public static void Warning(string message)
         {
-            Console.WriteLine($"⚠ {message}");
+            Console.WriteLine($"🔶 {message}");
         }
     }
 }

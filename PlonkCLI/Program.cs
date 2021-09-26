@@ -232,7 +232,7 @@ namespace NeatoCLI
             var error = api.NextErrorLine();
             while (error != null)
             {
-                Console.Error.WriteLine($"💢 {error}");
+                Logger.Error(error);
                 error = api.NextErrorLine();
             }
         }
