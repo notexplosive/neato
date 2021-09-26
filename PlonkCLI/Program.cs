@@ -91,6 +91,7 @@ namespace NeatoCLI
                     LogInstallStatus("git", () => new GitProgram(".").Version().wasSuccessful);
                     LogInstallStatus("dotnet", () => new DotnetProgram().Version().wasSuccessful);
                     LogInstallStatus("7zip", () => new SevenZipProgram().Run().wasSuccessful);
+                    LogInstallStatus("steamcmd", () => new SteamCmdProgram().RunQuit().wasSuccessful);
                 });
 
             parser.RegisterCommand("deploy-itch")
