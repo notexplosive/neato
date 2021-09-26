@@ -10,7 +10,7 @@ namespace Neato
 {
     public class SteamCmdProgram : ExternalProgram
     {
-        public SteamCmdProgram() : base(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "steam", "steamcmd"))
+        public SteamCmdProgram() : base("steamcmd")
         {
         }
 

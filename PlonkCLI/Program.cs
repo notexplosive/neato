@@ -162,7 +162,7 @@ namespace NeatoCLI
 
             parser.RegisterCommand("deploy-itch")
                 .AddParameter(Parameter.String("directory"))
-                .AddParameter(Parameter.String("itch url"))
+                .AddParameter(Parameter.String("itch account url"))
                 .AddParameter(Parameter.String("game url"))
                 .AddParameter(Parameter.String("channel"))
                 .OnExecuted((parameters) =>
