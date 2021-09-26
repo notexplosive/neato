@@ -32,7 +32,7 @@ namespace Neato
 
         public ProgramOutput RunWithArgs(params string[] argumentList)
         {
-            var stdOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList);
+            var allOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList);
             var wasSuccessful = true;
             using (Process process = new Process())
             {
@@ -50,8 +50,8 @@ namespace Neato
                     process.Start();
                     StreamReader standardReader = process.StandardOutput;
                     StreamReader errorReader = process.StandardError;
-                    stdOutput = standardReader.ReadToEnd();
-                    stdOutput += errorReader.ReadToEnd();
+                    allOutput = standardReader.ReadToEnd();
+                    allOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
                 }
                 catch (System.ComponentModel.Win32Exception)
@@ -59,11 +59,11 @@ namespace Neato
                     wasSuccessful = false;
                 }
             }
-            return new ProgramOutput(wasSuccessful, stdOutput);
+            return new ProgramOutput(wasSuccessful, allOutput);
         }
         public ProgramOutput RunWithArgsAt(string workingDirectory, params string[] argumentList)
         {
-            var stdOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+            var allOutput = "ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
                 + "\n" + "in working directory: " + workingDirectory;
             var wasSuccessful = true;
             using (Process process = new Process())
@@ -83,8 +83,8 @@ namespace Neato
                     process.Start();
                     StreamReader standardReader = process.StandardOutput;
                     StreamReader errorReader = process.StandardError;
-                    stdOutput = standardReader.ReadToEnd();
-                    stdOutput += errorReader.ReadToEnd();
+                    allOutput = standardReader.ReadToEnd();
+                    allOutput += errorReader.ReadToEnd();
                     process.WaitForExit();
                 }
                 catch (System.ComponentModel.Win32Exception)
@@ -92,7 +92,7 @@ namespace Neato
                     wasSuccessful = false;
                 }
             }
-            return new ProgramOutput(wasSuccessful, stdOutput);
+            return new ProgramOutput(wasSuccessful, allOutput);
         }
     }
 }
