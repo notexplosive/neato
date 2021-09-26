@@ -4,10 +4,29 @@ using System.IO;
 
 namespace NeatoCLI
 {
+    public static class Logger
+    {
+        public static void Info(string message)
+        {
+            Console.WriteLine($"🔵 {message}");
+        }
+
+        public static void Error(string message)
+        {
+            Console.WriteLine($"💢 {message}");
+        }
+
+        public static void Warning(string message)
+        {
+            Console.WriteLine($"⚠ {message}");
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             var parser = new CommandLineParser();
 
             parser.RegisterCommand("package-zip")
@@ -22,7 +41,7 @@ namespace NeatoCLI
                     var outputDirectory = parameters[1].AsString();
                     var zipName = parameters[2].AsString();
 
-                    Console.WriteLine("Packaging as zip");
+                    Logger.Info("Packaging as zip");
                     var buildOutputFiles = new FileManager(PathType.Absolute, Path.Join(outputDirectory, "neato-temp"));
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, buildOutputFiles);
                     var sevenZipResult = sevenZip.SendToZip(buildOutputFiles.WorkingDirectory, outputDirectory, zipName);
@@ -42,7 +61,7 @@ namespace NeatoCLI
                     var files = new FileManager(PathType.Relative, parameters[0].AsString());
                     var outputDirectory = parameters[2].AsString();
 
-                    Console.WriteLine("Packaging as executable");
+                    Logger.Info("Packaging as executable");
                     var result = dotnet.PublishExe_Special(files.WorkingDirectory, outputDirectory);
                     result.PrintToStdOut();
                 });
@@ -56,10 +75,22 @@ namespace NeatoCLI
             parser.RegisterCommand("status")
                 .OnExecuted((parameters) =>
                 {
-                    Console.WriteLine(new ButlerProgram().Version().wasSuccessful ? ">> butler is installed" : "!! butler is not installed");
-                    Console.WriteLine(new GitProgram(".").Version().wasSuccessful ? ">> git is installed" : "!! git is not installed");
-                    Console.WriteLine(new DotnetProgram().Version().wasSuccessful ? ">> dotnet is installed" : "!! dotnet is not installed");
-                    Console.WriteLine(new SevenZipProgram().Run().wasSuccessful ? ">> 7zip is installed" : "!! 7zip is not installed");
+                    void LogInstallStatus(string name, Func<bool> check)
+                    {
+                        if (check())
+                        {
+                            Logger.Info($"{name} is installed");
+                        }
+                        else
+                        {
+                            Logger.Warning($"{name} is not detected, either not installed or not on PATH");
+                        }
+                    }
+
+                    LogInstallStatus("butler", () => new ButlerProgram().Version().wasSuccessful);
+                    LogInstallStatus("git", () => new GitProgram(".").Version().wasSuccessful);
+                    LogInstallStatus("dotnet", () => new DotnetProgram().Version().wasSuccessful);
+                    LogInstallStatus("7zip", () => new SevenZipProgram().Run().wasSuccessful);
                 });
 
             parser.RegisterCommand("deploy-itch")
@@ -75,7 +106,7 @@ namespace NeatoCLI
                     var channel = parameters[3].AsString();
                     var butler = new ButlerProgram();
                     var result = butler.Push(directoryToUpload, itchUrl, gameUrl, channel);
-                    Console.WriteLine(result.stdOutput);
+                    Logger.Info(result.stdOutput);
                 })
                 ;
 
@@ -92,7 +123,7 @@ namespace NeatoCLI
 
                     if (Directory.Exists(repoPath))
                     {
-                        Console.WriteLine("Project already exists");
+                        Logger.Info("Project already exists");
                         return;
                     }
 
@@ -101,33 +132,33 @@ namespace NeatoCLI
                     var oldWorkingDir = Directory.GetCurrentDirectory();
                     Directory.SetCurrentDirectory(repoPath);
 
-                    Console.WriteLine("Creating Repo");
+                    Logger.Info("Creating Repo");
                     git.RunWithArgs("init");
 
-                    Console.WriteLine("Downloading Machina");
+                    Logger.Info("Downloading Machina");
                     git.RunWithArgs("submodule", "add", "https://github.com/notexplosive/machina.git");
 
-                    Console.WriteLine("Basic MonoGame Setup");
+                    Logger.Info("Basic MonoGame Setup");
                     dotnet.RunWithArgs("new", "--install", "MonoGame.Templates.CSharp");
                     dotnet.RunWithArgs("tool", "install", "--global", "dotnet-mgcb-editor");
                     new ExternalProgram("mgcb-editor").RunWithArgs("--register");
 
-                    Console.WriteLine("Creating Template");
+                    Logger.Info("Creating Template");
                     dotnet.RunWithArgs("new", "mgdesktopgl", "-o", projectName);
 
-                    Console.WriteLine("Creating Solution");
+                    Logger.Info("Creating Solution");
                     dotnet.RunWithArgs("new", "sln");
 
-                    Console.WriteLine("Add projects to Solution");
+                    Logger.Info("Add projects to Solution");
                     dotnet.RunWithArgs("sln", "add", projectName);
                     var machinaLocalPath = Path.Join(".", "machina", "Machina");
                     dotnet.RunWithArgs("sln", "add", machinaLocalPath);
                     dotnet.RunWithArgs("sln", "add", Path.Join(".", "machina", "TestMachina"));
 
-                    Console.WriteLine("Add Machina to Project");
+                    Logger.Info("Add Machina to Project");
                     dotnet.RunWithArgs("add", projectName, "reference", machinaLocalPath);
 
-                    Console.WriteLine("Copying Files");
+                    Logger.Info("Copying Files");
                     localFiles.Copy(
                         new PathContext(PathType.Relative, Path.Join(projectName, "machina", ".gitignore")),
                         new PathContext(PathType.Relative, Path.Join(projectName, ".gitignore")));
@@ -138,7 +169,7 @@ namespace NeatoCLI
                     git.RunWithArgs("commit", "-m", "(Machina:Automated) Initial Commit");
 
                     Directory.SetCurrentDirectory(oldWorkingDir);
-                    Console.WriteLine("Done");
+                    Logger.Info("Done");
                 })
                 ;
 
@@ -148,7 +179,7 @@ namespace NeatoCLI
             var error = api.NextErrorLine();
             while (error != null)
             {
-                Console.Error.WriteLine($"[error] {error}");
+                Console.Error.WriteLine($"💢 {error}");
                 error = api.NextErrorLine();
             }
         }
