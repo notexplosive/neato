@@ -14,7 +14,7 @@ namespace Neato
 
         public ProgramOutput PublishExe_Special(string csprojPath, string outputDirectory)
         {
-            return RunWithArgs(
+            return RunWithArgs(OutputLevel.Allow,
                         "publish",
                         csprojPath,
                         "-c", "Release",
@@ -34,7 +34,7 @@ namespace Neato
         /// <returns></returns>
         public ProgramOutput NormalPublish(string csprojPath, FileManager outputFile)
         {
-            return RunWithArgs(
+            return RunWithArgs(OutputLevel.Allow,
                         "publish",
                         csprojPath,
                         "-c", "Release",
@@ -47,7 +47,12 @@ namespace Neato
 
         public ProgramOutput Version()
         {
-            return RunWithArgs("--version");
+            return RunWithArgs(OutputLevel.Allow, "--version");
+        }
+
+        public bool Exists()
+        {
+            return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
         }
     }
 }

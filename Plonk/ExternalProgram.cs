@@ -15,6 +15,12 @@ namespace Neato
         }
     }
 
+    public enum OutputLevel
+    {
+        Allow,
+        Suppress
+    }
+
     public class ExternalProgram
     {
         private readonly string runPath;
@@ -24,20 +30,31 @@ namespace Neato
             this.runPath = runPath;
         }
 
-        public ProgramOutput RunWithArgs(params string[] argumentList)
+        public ProgramOutput RunWithArgs(OutputLevel outputLevel, params string[] argumentList)
         {
-            return RunWithArgsAt(Directory.GetCurrentDirectory(), argumentList);
+            return RunWithArgsAt(Directory.GetCurrentDirectory(), outputLevel, argumentList);
         }
-        public ProgramOutput RunWithArgsAt(string workingDirectory, params string[] argumentList)
+
+        public ProgramOutput RunWithArgsAt(string workingDirectory, OutputLevel outputLevel, params string[] argumentList)
         {
-            Console.WriteLine("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
-                + "\n" + "in working directory: " + workingDirectory);
+            if (outputLevel == OutputLevel.Allow)
+            {
+                Console.WriteLine("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+                    + "\n" + "in working directory: " + workingDirectory);
+            }
             var wasSuccessful = true;
             using (Process process = new Process())
             {
                 process.StartInfo.WorkingDirectory = workingDirectory;
                 process.StartInfo.FileName = runPath;
                 process.StartInfo.UseShellExecute = false;
+
+                if (outputLevel == OutputLevel.Suppress)
+                {
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                }
+
                 foreach (var argument in argumentList)
                 {
                     process.StartInfo.ArgumentList.Add(argument);

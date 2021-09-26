@@ -106,11 +106,11 @@ namespace NeatoCLI
                         }
                     }
 
-                    LogInstallStatus("butler", () => new ButlerProgram().Version().wasSuccessful);
-                    LogInstallStatus("git", () => new GitProgram(".").Version().wasSuccessful);
-                    LogInstallStatus("dotnet", () => new DotnetProgram().Version().wasSuccessful);
-                    LogInstallStatus("7zip", () => new SevenZipProgram().Run().wasSuccessful);
-                    LogInstallStatus("steamcmd", () => new SteamCmdProgram().RunQuit().wasSuccessful);
+                    LogInstallStatus("butler", () => new ButlerProgram().Exists());
+                    LogInstallStatus("git", () => new GitProgram(".").Exists());
+                    LogInstallStatus("dotnet", () => new DotnetProgram().Exists());
+                    LogInstallStatus("7zip", () => new SevenZipProgram().Exists());
+                    LogInstallStatus("steamcmd", () => new SteamCmdProgram().Exists());
                 });
 
             parser.RegisterCommand("find-vdf")
@@ -199,30 +199,30 @@ namespace NeatoCLI
                     Directory.SetCurrentDirectory(repoPath);
 
                     Logger.Info("Creating Repo");
-                    git.RunWithArgs("init");
+                    git.RunWithArgs(OutputLevel.Suppress, "init");
 
                     Logger.Info("Downloading Machina");
-                    git.RunWithArgs("submodule", "add", "https://github.com/notexplosive/machina.git");
+                    git.RunWithArgs(OutputLevel.Suppress, "submodule", "add", "https://github.com/notexplosive/machina.git");
 
                     Logger.Info("Basic MonoGame Setup");
-                    dotnet.RunWithArgs("new", "--install", "MonoGame.Templates.CSharp");
-                    dotnet.RunWithArgs("tool", "install", "--global", "dotnet-mgcb-editor");
-                    new ExternalProgram("mgcb-editor").RunWithArgs("--register");
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "--install", "MonoGame.Templates.CSharp");
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "tool", "install", "--global", "dotnet-mgcb-editor");
+                    new ExternalProgram("mgcb-editor").RunWithArgs(OutputLevel.Suppress, "--register");
 
                     Logger.Info("Creating Template");
-                    dotnet.RunWithArgs("new", "mgdesktopgl", "-o", projectName);
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "mgdesktopgl", "-o", projectName);
 
                     Logger.Info("Creating Solution");
-                    dotnet.RunWithArgs("new", "sln");
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "new", "sln");
 
                     Logger.Info("Add projects to Solution");
-                    dotnet.RunWithArgs("sln", "add", projectName);
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", projectName);
                     var machinaLocalPath = Path.Join(".", "machina", "Machina");
-                    dotnet.RunWithArgs("sln", "add", machinaLocalPath);
-                    dotnet.RunWithArgs("sln", "add", Path.Join(".", "machina", "TestMachina"));
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", machinaLocalPath);
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "sln", "add", Path.Join(".", "machina", "TestMachina"));
 
                     Logger.Info("Add Machina to Project");
-                    dotnet.RunWithArgs("add", projectName, "reference", machinaLocalPath);
+                    dotnet.RunWithArgs(OutputLevel.Suppress, "add", projectName, "reference", machinaLocalPath);
 
                     Logger.Info("Copying Files");
                     localFiles.Copy(
@@ -231,8 +231,8 @@ namespace NeatoCLI
                     localFiles.Copy(
                         new PathContext(PathType.Relative, Path.Join(projectName, "machina", "game-readme.md")),
                         new PathContext(PathType.Relative, Path.Join(projectName, "readme.md")));
-                    git.RunWithArgs("add", ".");
-                    git.RunWithArgs("commit", "-m", "(Machina:Automated) Initial Commit");
+                    git.RunWithArgs(OutputLevel.Suppress, "add", ".");
+                    git.RunWithArgs(OutputLevel.Suppress, "commit", "-m", "(Machina:Automated) Initial Commit");
 
                     Directory.SetCurrentDirectory(oldWorkingDir);
                     Logger.Info("Done");

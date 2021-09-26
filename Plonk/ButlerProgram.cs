@@ -14,22 +14,27 @@ namespace Neato
 
         public void Logout()
         {
-            RunWithArgs("logout", "--assume-yes");
+            RunWithArgs(OutputLevel.Allow, "logout", "--assume-yes");
         }
 
         public void Login()
         {
-            RunWithArgs("login");
+            RunWithArgs(OutputLevel.Allow, "login");
         }
 
         public ProgramOutput Version()
         {
-            return RunWithArgs("--version");
+            return RunWithArgs(OutputLevel.Allow, "--version");
         }
 
         public ProgramOutput Push(string directoryToUpload, string itchUrl, string gameUrl, string channel)
         {
-            return RunWithArgs("push", directoryToUpload, $"{itchUrl}/{gameUrl}:{channel}");
+            return RunWithArgs(OutputLevel.Allow, "push", directoryToUpload, $"{itchUrl}/{gameUrl}:{channel}");
+        }
+
+        public bool Exists()
+        {
+            return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
         }
     }
 }

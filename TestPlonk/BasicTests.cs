@@ -14,7 +14,7 @@ namespace TestNeato
             // Intentionally call `ping` with bad args so we get an easy to expect result
 
             var program = new ExternalProgram("ping");
-            var result = program.RunWithArgs("10.0.0.1", "-i", "0");
+            var result = program.RunWithArgs(OutputLevel.Suppress, "10.0.0.1", "-i", "0");
 
             result.wasSuccessful.Should().BeTrue();
         }
@@ -23,7 +23,7 @@ namespace TestNeato
         public void fails_to_call_programs_that_do_not_exist()
         {
             var program = new ExternalProgram("fjbnlazb");
-            var result = program.RunWithArgs();
+            var result = program.RunWithArgs(OutputLevel.Allow);
 
             result.wasSuccessful.Should().Be(false);
         }

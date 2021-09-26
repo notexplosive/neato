@@ -17,12 +17,17 @@ namespace Neato
 
         public void Init()
         {
-            RunWithArgsAt(this.workingDirectory, "init");
+            RunWithArgsAt(this.workingDirectory, OutputLevel.Suppress, "init");
         }
 
         public ProgramOutput Version()
         {
-            return RunWithArgs("--version");
+            return RunWithArgs(OutputLevel.Allow, "--version");
+        }
+
+        public bool Exists()
+        {
+            return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
         }
     }
 }
