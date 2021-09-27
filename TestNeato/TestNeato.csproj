@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plonk\Neato.csproj" />
+    <ProjectReference Include="..\Neato\Neato.csproj" />
   </ItemGroup>
 
 </Project>
