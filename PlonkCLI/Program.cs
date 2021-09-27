@@ -12,7 +12,7 @@ namespace NeatoCLI
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var parser = new CommandLineParser();
 
-            parser.RegisterCommand("publish-monogame-zip")
+            parser.RegisterCommand("monogame-release-build-zip")
                 .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
                 .AddParameter(Parameter.String("zip name"))
@@ -25,14 +25,14 @@ namespace NeatoCLI
                     var zipName = parameters[2].AsString();
 
                     Logger.Info("Packaging as zip");
-                    var buildOutputFiles = new FileManager(PathType.Absolute, Path.Join(outputDirectory, "neato-temp"));
+                    var buildOutputFiles = new FileManager(PathType.Absolute, Path.Join(outputDirectory, "build-" + Guid.NewGuid()));
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, buildOutputFiles);
                     var sevenZipResult = sevenZip.SendToZip(buildOutputFiles.WorkingDirectory, outputDirectory, zipName);
 
                     buildOutputFiles.RemoveDirectoryRecursive(new PathContext(PathType.Relative, "."));
                 });
 
-            parser.RegisterCommand("publish-monogame")
+            parser.RegisterCommand("monogame-release-build")
                 .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
                 .OnExecuted((parameters) =>
@@ -42,17 +42,17 @@ namespace NeatoCLI
                     var localFiles = new FileManager(PathType.Relative, parameters[0].AsString());
                     var outputDirectory = parameters[1].AsString();
 
-                    Logger.Info($"Publishing to {outputDirectory}, this might take a while");
+                    Logger.Info($"Publishing to {outputDirectory}");
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, new FileManager(PathType.Absolute, outputDirectory));
                 });
 
-            parser.RegisterCommand("itch-login")
+            parser.RegisterCommand("login-itch")
                 .OnExecuted((parameters) =>
                 {
                     new ButlerProgram().Login();
                 });
 
-            parser.RegisterCommand("steam-login")
+            parser.RegisterCommand("login-steam")
                 .AddParameter(Parameter.String("username"))
                 .OnExecuted((parameters) =>
                 {
@@ -82,15 +82,15 @@ namespace NeatoCLI
                     LogInstallStatus("steamcmd", () => new SteamCmdProgram().Exists());
                 });
 
-            parser.RegisterCommand("deploy-all")
-                .AddParameter(Parameter.String("directory to upload"))
+            parser.RegisterCommand("publish-all")
+                .AddParameter(Parameter.String("path that contains csproj"))
                 .AddParameter(Parameter.String("steam username"))
                 .AddParameter(Parameter.String("itch username"))
                 .AddParameter(Parameter.String("itch game url"))
                 .AddParameter(Parameter.String("itch channel"))
                 .OnExecuted((parameters) =>
                 {
-                    var gameDirectory = parameters[0].AsString();
+                    var pathToCsproj = parameters[0].AsString();
                     var steamUsername = parameters[1].AsString();
                     var itchUsername = parameters[2].AsString();
                     var gameUrl = parameters[3].AsString();
@@ -100,7 +100,7 @@ namespace NeatoCLI
 
                     if (!string.IsNullOrEmpty(vdfFile))
                     {
-                        Logger.Info($"About to upload {Path.GetFullPath(gameDirectory)}");
+                        Logger.Info($"About to build and then upload {Path.GetFullPath(pathToCsproj)}");
                         Logger.Info($"\tto itch.io at {itchUsername.ToUpper()}/{gameUrl}:{channel}");
                         Logger.Info($"\tto steam as {steamUsername.ToUpper()} using {Path.GetFileName(vdfFile)}");
                         Logger.Warning($"Does the above look correct? [y/N]");
@@ -108,13 +108,26 @@ namespace NeatoCLI
 
                         if (answer.Key == ConsoleKey.Y)
                         {
+                            var dotnet = new DotnetProgram();
+                            var localFiles = new FileManager(PathType.Relative, parameters[0].AsString());
+                            var outputDirectoryLocal = $"build-temp-{Guid.NewGuid()}";
+                            localFiles.MakeDirectory(new PathContext(PathType.Relative, outputDirectoryLocal));
+
+                            Logger.Info($"Building to {outputDirectoryLocal}");
+                            dotnet.NormalPublish(pathToCsproj, new FileManager(PathType.Absolute, outputDirectoryLocal));
+
+                            Logger.Info($"Removing .pdb files");
+                            localFiles.RemoveFiles(new PathContext(PathType.Relative, outputDirectoryLocal), "*.pdb");
+
                             Logger.Info("Logging into itch.io");
                             new ButlerProgram().Login();
 
                             Logger.Info("Deploying to itch");
-                            DeployToItch(gameDirectory, itchUsername, gameUrl, channel);
+                            DeployToItch(outputDirectoryLocal, itchUsername, gameUrl, channel);
                             Logger.Info("Deploying to steam");
                             DeployToSteam(steamUsername, vdfFile);
+                            Logger.Info("Cleaning up");
+                            localFiles.RemoveDirectoryRecursive(new PathContext(PathType.Relative, outputDirectoryLocal));
                         }
                     }
                     else
@@ -141,7 +154,7 @@ namespace NeatoCLI
                     }
                 });
 
-            parser.RegisterCommand("deploy-steam")
+            parser.RegisterCommand("publish-steam")
                 .AddParameter(Parameter.String("username"))
                 .AddParameter(Parameter.String("directory"))
                 .OnExecuted((parameters) =>
@@ -156,7 +169,7 @@ namespace NeatoCLI
                     }
                 });
 
-            parser.RegisterCommand("deploy-itch")
+            parser.RegisterCommand("publish-itch")
                 .AddParameter(Parameter.String("directory"))
                 .AddParameter(Parameter.String("itch account url"))
                 .AddParameter(Parameter.String("game url"))
@@ -171,7 +184,7 @@ namespace NeatoCLI
                 })
                 ;
 
-            parser.RegisterCommand("project")
+            parser.RegisterCommand("new-project")
                 .AddParameter(Parameter.String("project name"))
                 .OnExecuted((parameters) =>
                 {
