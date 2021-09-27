@@ -96,16 +96,30 @@ namespace NeatoCLI
                     var gameUrl = parameters[3].AsString();
                     var channel = parameters[4].AsString();
 
-                    Logger.Info("Logging into itch.io");
-                    new ButlerProgram().Login();
-
                     var vdfFile = GetOnlyVdfFileInDirectory(Directory.GetCurrentDirectory());
+
                     if (!string.IsNullOrEmpty(vdfFile))
                     {
-                        Logger.Info("Deploying to itch");
-                        DeployToItch(gameDirectory, itchUsername, gameUrl, channel);
-                        Logger.Info("Deploying to steam");
-                        DeployToSteam(steamUsername, vdfFile);
+                        Logger.Info($"About to upload {Path.GetFullPath(gameDirectory)}");
+                        Logger.Info($"\tto itch.io at {itchUsername.ToUpper()}/{gameUrl}:{channel}");
+                        Logger.Info($"\tto steam as {steamUsername.ToUpper()} using {Path.GetFileName(vdfFile)}");
+                        Logger.Warning($"Does the above look correct? [y/N]");
+                        var answer = Console.ReadKey();
+
+                        if (answer.Key == ConsoleKey.Y)
+                        {
+                            Logger.Info("Logging into itch.io");
+                            new ButlerProgram().Login();
+
+                            Logger.Info("Deploying to itch");
+                            DeployToItch(gameDirectory, itchUsername, gameUrl, channel);
+                            Logger.Info("Deploying to steam");
+                            DeployToSteam(steamUsername, vdfFile);
+                        }
+                    }
+                    else
+                    {
+                        Logger.Warning("Cannot deploy to steam without a .vdf file in the current directory");
                     }
                 });
 
@@ -238,17 +252,17 @@ namespace NeatoCLI
             }
         }
 
-        private static bool DeployToItch(string directory, string itchUsername, string gameUrl, string channel)
+        private static void DeployToItch(string directory, string itchUsername, string gameUrl, string channel)
         {
             var butler = new ButlerProgram();
-            var result = butler.Push(directory, itchUsername, gameUrl, channel);
-            return result.wasSuccessful;
+            butler.Push(directory, itchUsername, gameUrl, channel);
         }
 
         private static void DeployToSteam(string username, string vdfFile)
         {
             var steamCmd = new SteamCmdProgram();
             steamCmd.Deploy(username, vdfFile);
+            Logger.Warning("You still need to set this as the default build in Steamworks");
         }
 
         public static string GetOnlyVdfFileInDirectory(string directory)
