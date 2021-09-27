@@ -12,7 +12,7 @@ namespace NeatoCLI
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var parser = new CommandLineParser();
 
-            parser.RegisterCommand("package-zip")
+            parser.RegisterCommand("publish-monogame-zip")
                 .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
                 .AddParameter(Parameter.String("zip name"))
@@ -32,7 +32,7 @@ namespace NeatoCLI
                     buildOutputFiles.RemoveDirectoryRecursive(new PathContext(PathType.Relative, "."));
                 });
 
-            parser.RegisterCommand("normal-publish")
+            parser.RegisterCommand("publish-monogame")
                 .AddParameter(Parameter.String("path to csproj"))
                 .AddParameter(Parameter.String("destination"))
                 .OnExecuted((parameters) =>
@@ -44,19 +44,6 @@ namespace NeatoCLI
 
                     Logger.Info($"Publishing to {outputDirectory}, this might take a while");
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, new FileManager(PathType.Absolute, outputDirectory));
-                });
-
-            parser.RegisterCommand("make-special-exe")
-                .AddParameter(Parameter.String("path to csproj"))
-                .AddParameter(Parameter.String("destination"))
-                .OnExecuted((parameters) =>
-                {
-                    var dotnet = new DotnetProgram();
-                    var files = new FileManager(PathType.Relative, parameters[0].AsString());
-                    var outputDirectory = parameters[2].AsString();
-
-                    Logger.Info("Packaging as executable");
-                    var result = dotnet.PublishExe_Special(files.WorkingDirectory, outputDirectory);
                 });
 
             parser.RegisterCommand("itch-login")
@@ -95,10 +82,37 @@ namespace NeatoCLI
                     LogInstallStatus("steamcmd", () => new SteamCmdProgram().Exists());
                 });
 
+            parser.RegisterCommand("deploy-all")
+                .AddParameter(Parameter.String("directory to upload"))
+                .AddParameter(Parameter.String("steam username"))
+                .AddParameter(Parameter.String("itch username"))
+                .AddParameter(Parameter.String("itch game url"))
+                .AddParameter(Parameter.String("itch channel"))
+                .OnExecuted((parameters) =>
+                {
+                    var gameDirectory = parameters[0].AsString();
+                    var steamUsername = parameters[1].AsString();
+                    var itchUsername = parameters[2].AsString();
+                    var gameUrl = parameters[3].AsString();
+                    var channel = parameters[4].AsString();
+
+                    Logger.Info("Logging into itch.io");
+                    new ButlerProgram().Login();
+
+                    var vdfFile = GetOnlyVdfFileInDirectory(Directory.GetCurrentDirectory());
+                    if (!string.IsNullOrEmpty(vdfFile))
+                    {
+                        Logger.Info("Deploying to itch");
+                        DeployToItch(gameDirectory, itchUsername, gameUrl, channel);
+                        Logger.Info("Deploying to steam");
+                        DeployToSteam(steamUsername, vdfFile);
+                    }
+                });
+
             parser.RegisterCommand("find-vdf")
                 .OnExecuted((parameters) =>
                 {
-                    var files = GetAllVdfsInDirectory();
+                    var files = GetAllVdfsInDirectory(Directory.GetCurrentDirectory());
 
                     if (files.Count == 0)
                     {
@@ -120,23 +134,11 @@ namespace NeatoCLI
                 {
                     var directory = parameters[0].AsString();
                     var username = parameters[1].AsString();
-                    var files = GetAllVdfsInDirectory();
+                    var vdfFile = GetOnlyVdfFileInDirectory(Directory.GetCurrentDirectory());
 
-                    if (files.Count == 1)
+                    if (!string.IsNullOrEmpty(vdfFile))
                     {
-                        var vdfFile = files[0];
-                        Logger.Info($"Found vdf: {vdfFile}");
-                        var steamCmd = new SteamCmdProgram();
-
-                        var deployResult = steamCmd.Deploy(username, vdfFile);
-                    }
-                    else if (files.Count == 0)
-                    {
-                        Logger.Error("No .vdf files found");
-                    }
-                    else
-                    {
-                        Logger.Error("Found multiple .vdf files, unsure which one to use");
+                        DeployToSteam(username, vdfFile);
                     }
                 });
 
@@ -151,8 +153,7 @@ namespace NeatoCLI
                     var itchUrl = parameters[1].AsString();
                     var gameUrl = parameters[2].AsString();
                     var channel = parameters[3].AsString();
-                    var butler = new ButlerProgram();
-                    var result = butler.Push(directoryToUpload, itchUrl, gameUrl, channel);
+                    DeployToItch(directoryToUpload, itchUrl, gameUrl, channel);
                 })
                 ;
 
@@ -237,9 +238,44 @@ namespace NeatoCLI
             }
         }
 
-        public static List<string> GetAllVdfsInDirectory()
+        private static bool DeployToItch(string directory, string itchUsername, string gameUrl, string channel)
         {
-            var enumerated = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.vdf");
+            var butler = new ButlerProgram();
+            var result = butler.Push(directory, itchUsername, gameUrl, channel);
+            return result.wasSuccessful;
+        }
+
+        private static void DeployToSteam(string username, string vdfFile)
+        {
+            var steamCmd = new SteamCmdProgram();
+            steamCmd.Deploy(username, vdfFile);
+        }
+
+        public static string GetOnlyVdfFileInDirectory(string directory)
+        {
+            var files = GetAllVdfsInDirectory(directory);
+
+            if (files.Count == 1)
+            {
+                var vdfFile = files[0];
+                Logger.Info($"Found vdf: {vdfFile}");
+                return vdfFile;
+            }
+            else if (files.Count == 0)
+            {
+                Logger.Error("No .vdf files found");
+                return null;
+            }
+            else
+            {
+                Logger.Error("Found multiple .vdf files, unsure which one to use");
+                return null;
+            }
+        }
+
+        public static List<string> GetAllVdfsInDirectory(string directory)
+        {
+            var enumerated = Directory.EnumerateFiles(directory, "*.vdf");
 
             var files = new List<string>();
 
