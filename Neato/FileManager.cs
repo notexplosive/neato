@@ -32,6 +32,22 @@ namespace Neato
             }
         }
 
+        public string[] GetAllFiles(PathContext context, string pattern)
+        {
+            var files = Directory.EnumerateFiles(context.CalculatePath(WorkingDirectory), pattern);
+            var count = files.Count();
+            var array = new string[count];
+
+            int i = 0;
+            foreach (var file in files)
+            {
+                array[i] = file;
+                i++;
+            }
+
+            return array;
+        }
+
         public FileManager(PathType pathType, string workingDirectory)
         {
             if (pathType == PathType.Relative)

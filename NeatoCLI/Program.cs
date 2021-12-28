@@ -46,6 +46,29 @@ namespace NeatoCLI
                     var dotnetResult = dotnet.NormalPublish(localFiles.WorkingDirectory, new FileManager(PathType.Absolute, outputDirectory));
                 });
 
+            parser.RegisterCommand("combine-screenshots")
+                .AddParameter(Parameter.String("screenshot folder"))
+                .AddParameter(Parameter.String("destination video"))
+                .OnExecuted((parameters) =>
+                {
+                    var screenshotsFolder = new FileManager(PathType.Absolute, Path.GetFullPath(parameters[0].AsString()));
+                    var destinationVideoLocation = Path.GetFullPath(parameters[1].AsString());
+
+                    var ffmpeg = new FfmpegProgram();
+
+                    screenshotsFolder.WriteToFile(new PathContext(PathType.Relative, "concat.txt"), ffmpeg.GenerateConcatFromPngs(screenshotsFolder));
+
+                    ffmpeg.RunWithArgsAt(screenshotsFolder.WorkingDirectory, OutputLevel.Allow,
+                        "-f", "concat",
+                        "-i", "concat.txt",
+                        "-preset", "slow",
+                        "-vf", "scale=1280:720",
+                        "-vsync", "vfr",
+                        "-pix_fmt", "yuv420p",
+                        "-crf", "18",
+                        destinationVideoLocation);
+                });
+
             parser.RegisterCommand("login-itch")
                 .OnExecuted((parameters) =>
                 {
