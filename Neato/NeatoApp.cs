@@ -239,10 +239,10 @@ namespace Neato
                     var outputLevel = OutputLevel.Suppress;
 
                     Logger.Info("Creating Repo");
-                    git.RunWithArgs(outputLevel, "init");
+                    git.Init(outputLevel);
 
                     Logger.Info("Downloading Machina");
-                    git.RunWithArgs(outputLevel, "submodule", "add", "https://github.com/notexplosive/machina.git");
+                    git.AddSubmodule(outputLevel, "https://github.com/notexplosive/machina.git");
 
                     Logger.Info("Installing Monogame Template");
                     dotnet.RunWithArgs(outputLevel, "new", "--install", "MonoGame.Templates.CSharp");
@@ -275,8 +275,8 @@ namespace Neato
                     localFiles.Copy(
                         new PathContext(PathType.Relative, Path.Join(projectName, "machina", "game-readme.md")),
                         new PathContext(PathType.Relative, Path.Join(projectName, "readme.md")));
-                    git.RunWithArgs(outputLevel, "add", ".");
-                    git.RunWithArgs(outputLevel, "commit", "-m", "(Machina:Automated) Initial Commit");
+                    git.AddAll(outputLevel);
+                    git.CommitWithMessage(outputLevel, "(Machina:Automated) Initial Commit");
 
                     Directory.SetCurrentDirectory(oldWorkingDir);
                     Logger.Info("Done.");

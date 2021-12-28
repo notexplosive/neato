@@ -15,9 +15,9 @@ namespace Neato
             this.workingDirectory = workingDirectory;
         }
 
-        public void Init()
+        public void Init(OutputLevel outputLevel = OutputLevel.Suppress)
         {
-            RunWithArgsAt(this.workingDirectory, OutputLevel.Suppress, "init");
+            RunWithArgsAt(this.workingDirectory, outputLevel, "init");
         }
 
         public ProgramOutput Version()
@@ -28,6 +28,21 @@ namespace Neato
         public bool Exists()
         {
             return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
+        }
+
+        public void AddAll(OutputLevel outputLevel)
+        {
+            RunWithArgs(outputLevel, "add", ".");
+        }
+
+        public void CommitWithMessage(OutputLevel outputLevel, string commitMessage)
+        {
+            RunWithArgs(outputLevel, "commit", "-m", commitMessage);
+        }
+
+        public void AddSubmodule(OutputLevel outputLevel, string url)
+        {
+            RunWithArgs(outputLevel, "submodule", "add", url);
         }
     }
 }
