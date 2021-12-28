@@ -66,7 +66,7 @@ namespace Neato
 
                     screenshotsFolder.WriteToFile(new PathContext(PathType.Relative, "concat.txt"), ffmpeg.GenerateConcatFromPngs(screenshotsFolder));
 
-                    ffmpeg.RunWithArgsAt(screenshotsFolder.WorkingDirectory, OutputLevel.Allow,
+                    ffmpeg.RunWithArgsAt(screenshotsFolder.WorkingDirectory, ProgramOutputLevel.AllowProgramToEmitToConsole,
                         "-f", "concat",
                         "-i", "concat.txt",
                         "-preset", "slow",
@@ -236,7 +236,7 @@ namespace Neato
 
                     var oldWorkingDir = Directory.GetCurrentDirectory();
                     Directory.SetCurrentDirectory(repoPath);
-                    var outputLevel = OutputLevel.Suppress;
+                    var outputLevel = ProgramOutputLevel.SuppressProgramFromEmittingToConsole;
 
                     Logger.Info("Creating Repo");
                     git.Init(outputLevel);

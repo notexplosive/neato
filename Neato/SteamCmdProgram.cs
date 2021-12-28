@@ -16,22 +16,22 @@ namespace Neato
 
         public ProgramOutput RunQuit()
         {
-            return RunWithArgs(OutputLevel.Allow, "+quit");
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole, "+quit");
         }
 
         public ProgramOutput Login(string steamUsername)
         {
-            return RunWithArgs(OutputLevel.Allow, "+login", $"{steamUsername}", "+quit");
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole, "+login", $"{steamUsername}", "+quit");
         }
 
         public ProgramOutput Deploy(string steamUsername, string fullPathToVDF)
         {
-            return RunWithArgs(OutputLevel.Allow, "+login", $"{steamUsername}", "+run_app_build", fullPathToVDF, "+quit");
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole, "+login", $"{steamUsername}", "+run_app_build", fullPathToVDF, "+quit");
         }
 
         public bool Exists()
         {
-            return RunWithArgs(OutputLevel.Suppress, "+quit").wasSuccessful;
+            return RunWithArgs(ProgramOutputLevel.SuppressProgramFromEmittingToConsole, "+quit").wasSuccessful;
         }
     }
 }

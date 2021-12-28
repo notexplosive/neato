@@ -15,10 +15,10 @@ namespace Neato
         }
     }
 
-    public enum OutputLevel
+    public enum ProgramOutputLevel
     {
-        Allow,
-        Suppress
+        AllowProgramToEmitToConsole,
+        SuppressProgramFromEmittingToConsole
     }
 
     public class ExternalProgram
@@ -32,14 +32,14 @@ namespace Neato
             this.logger = logger;
         }
 
-        public ProgramOutput RunWithArgs(OutputLevel outputLevel, params string[] argumentList)
+        public ProgramOutput RunWithArgs(ProgramOutputLevel outputLevel, params string[] argumentList)
         {
             return RunWithArgsAt(Directory.GetCurrentDirectory(), outputLevel, argumentList);
         }
 
-        public ProgramOutput RunWithArgsAt(string workingDirectory, OutputLevel outputLevel, params string[] argumentList)
+        public ProgramOutput RunWithArgsAt(string workingDirectory, ProgramOutputLevel outputLevel, params string[] argumentList)
         {
-            if (outputLevel == OutputLevel.Allow)
+            if (outputLevel == ProgramOutputLevel.AllowProgramToEmitToConsole)
             {
                 this.logger.Info("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
                     + "\n" + "in working directory: " + workingDirectory);
@@ -51,7 +51,7 @@ namespace Neato
                 process.StartInfo.FileName = runPath;
                 process.StartInfo.UseShellExecute = false;
 
-                if (outputLevel == OutputLevel.Suppress)
+                if (outputLevel == ProgramOutputLevel.SuppressProgramFromEmittingToConsole)
                 {
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;
@@ -66,7 +66,7 @@ namespace Neato
                 {
                     process.Start();
 
-                    if (outputLevel == OutputLevel.Suppress)
+                    if (outputLevel == ProgramOutputLevel.SuppressProgramFromEmittingToConsole)
                     {
                         // Flush the buffers
                         process.StandardOutput.ReadToEnd();

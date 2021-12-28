@@ -15,32 +15,32 @@ namespace Neato
             this.workingDirectory = workingDirectory;
         }
 
-        public void Init(OutputLevel outputLevel = OutputLevel.Suppress)
+        public void Init(ProgramOutputLevel outputLevel = ProgramOutputLevel.SuppressProgramFromEmittingToConsole)
         {
             RunWithArgsAt(this.workingDirectory, outputLevel, "init");
         }
 
         public ProgramOutput Version()
         {
-            return RunWithArgs(OutputLevel.Allow, "--version");
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole, "--version");
         }
 
         public bool Exists()
         {
-            return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
+            return RunWithArgs(ProgramOutputLevel.SuppressProgramFromEmittingToConsole, "--version").wasSuccessful;
         }
 
-        public void AddAll(OutputLevel outputLevel)
+        public void AddAll(ProgramOutputLevel outputLevel)
         {
             RunWithArgs(outputLevel, "add", ".");
         }
 
-        public void CommitWithMessage(OutputLevel outputLevel, string commitMessage)
+        public void CommitWithMessage(ProgramOutputLevel outputLevel, string commitMessage)
         {
             RunWithArgs(outputLevel, "commit", "-m", commitMessage);
         }
 
-        public void AddSubmodule(OutputLevel outputLevel, string url)
+        public void AddSubmodule(ProgramOutputLevel outputLevel, string url)
         {
             RunWithArgs(outputLevel, "submodule", "add", url);
         }

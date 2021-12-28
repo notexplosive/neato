@@ -23,17 +23,17 @@ namespace Neato
                 extensionToAdd = string.Empty;
             }
 
-            return RunWithArgs(OutputLevel.Allow, "a", "-r", Path.Join(outputDirectory, $"{zipName}{extensionToAdd}"), Path.Join(buildOutputDirectory, "*"));
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole, "a", "-r", Path.Join(outputDirectory, $"{zipName}{extensionToAdd}"), Path.Join(buildOutputDirectory, "*"));
         }
 
         public ProgramOutput Run()
         {
-            return RunWithArgs(OutputLevel.Allow);
+            return RunWithArgs(ProgramOutputLevel.AllowProgramToEmitToConsole);
         }
 
         public bool Exists()
         {
-            return RunWithArgs(OutputLevel.Suppress).wasSuccessful;
+            return RunWithArgs(ProgramOutputLevel.SuppressProgramFromEmittingToConsole).wasSuccessful;
         }
     }
 }
