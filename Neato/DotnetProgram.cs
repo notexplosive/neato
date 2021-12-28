@@ -54,5 +54,10 @@ namespace Neato
         {
             return RunWithArgs(OutputLevel.Suppress, "--version").wasSuccessful;
         }
+
+        public void AddToSln(OutputLevel outputLevel, string path)
+        {
+            RunWithArgs(outputLevel, "sln", "add", path);
+        }
     }
 }

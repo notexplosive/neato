@@ -258,12 +258,12 @@ namespace Neato
                     dotnet.RunWithArgs(outputLevel, "new", "sln");
 
                     Logger.Info("Add projects to Solution");
-                    dotnet.RunWithArgs(outputLevel, "sln", "add", projectName);
+                    dotnet.AddToSln(outputLevel, projectName);
                     var machinaLocalPath = Path.Join(".", "machina", "Machina");
-                    dotnet.RunWithArgs(outputLevel, "sln", "add", machinaLocalPath);
-                    dotnet.RunWithArgs(outputLevel, "sln", "add", Path.Join(".", "machina", "TestMachina"));
-                    dotnet.RunWithArgs(outputLevel, "sln", "add", Path.Join(".", "machina", "MachinaDesktop"));
-                    dotnet.RunWithArgs(outputLevel, "sln", "add", Path.Join(".", "machina", "MachinaAndroid"));
+                    dotnet.AddToSln(outputLevel, machinaLocalPath);
+                    dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "TestMachina"));
+                    dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "MachinaDesktop"));
+                    dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "MachinaAndroid"));
 
                     Logger.Info("Add Machina to Project");
                     dotnet.RunWithArgs(outputLevel, "add", projectName, "reference", machinaLocalPath);
