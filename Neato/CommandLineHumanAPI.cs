@@ -17,7 +17,7 @@ namespace Neato
             this.error = new List<string>();
         }
 
-        public bool UserInput(params string[] args)
+        public bool ConsumeUserInput(params string[] args)
         {
             try
             {

@@ -9,7 +9,7 @@ namespace Neato
 {
     public class SevenZipProgram : ExternalProgram
     {
-        public SevenZipProgram() : base("7z")
+        public SevenZipProgram(Logger logger) : base("7z", logger)
         {
         }
 

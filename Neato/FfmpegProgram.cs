@@ -9,7 +9,7 @@ namespace Neato
 {
     public class FfmpegProgram : ExternalProgram
     {
-        public FfmpegProgram() : base("ffmpeg")
+        public FfmpegProgram(Logger logger) : base("ffmpeg", logger)
         {
         }
 

@@ -29,7 +29,7 @@ namespace TestNeato
         [Fact]
         public void can_zip_directory_without_dot_zip()
         {
-            var sevenZip = new SevenZipProgram();
+            var sevenZip = new SevenZipProgram(new BufferedLogger());
             sevenZip.SendToZip(directoryToZip, outputDirectory, "output");
 
             var outputFile = Path.Join(outputDirectory, "output.zip");
@@ -39,7 +39,7 @@ namespace TestNeato
         [Fact]
         public void can_zip_directory_with_dot_zip()
         {
-            var sevenZip = new SevenZipProgram();
+            var sevenZip = new SevenZipProgram(new BufferedLogger());
             sevenZip.SendToZip(directoryToZip, outputDirectory, "output.zip");
 
             var outputFile = Path.Join(outputDirectory, "output.zip");

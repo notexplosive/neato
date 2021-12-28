@@ -32,7 +32,7 @@ namespace TestNeato
         [Fact]
         public void git_init()
         {
-            new GitProgram(this.repoPath).Init();
+            new GitProgram(this.repoPath, new BufferedLogger()).Init();
             Directory.Exists(Path.Join(this.repoPath, ".git")).Should().BeTrue();
         }
     }

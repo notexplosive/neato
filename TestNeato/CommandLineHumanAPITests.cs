@@ -21,7 +21,7 @@ namespace TestNeato
             parser.RegisterCommand("tick")
                 .AddParameter(Parameter.Int("number of times"));
 
-            api.UserInput("tick");
+            api.ConsumeUserInput("tick");
             api.NextErrorLine().Should().Be("Wrong number of arguments.");
             api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
@@ -39,7 +39,7 @@ namespace TestNeato
             parser.RegisterCommand("foo")
                 .AddParameter(Parameter.Int("number of times"));
 
-            api.UserInput("tock");
+            api.ConsumeUserInput("tock");
             api.NextErrorLine().Should().Be("Unknown command 'tock'");
             api.NextErrorLine().Should().Be("Commands: tick, tack, foo");
         }
@@ -57,7 +57,7 @@ namespace TestNeato
             parser.RegisterCommand("foo")
                 .AddParameter(Parameter.Int("number of times"));
 
-            api.UserInput();
+            api.ConsumeUserInput();
             api.NextErrorLine().Should().Be("Missing command.");
             api.NextErrorLine().Should().Be("Commands: tick, tack, foo");
         }
@@ -71,7 +71,7 @@ namespace TestNeato
             parser.RegisterCommand("tick")
                 .AddParameter(Parameter.Int("number of times"));
 
-            api.UserInput("tick", "3", "10", "8");
+            api.ConsumeUserInput("tick", "3", "10", "8");
             api.NextErrorLine().Should().Be("Wrong number of arguments.");
             api.NextErrorLine().Should().Be("Usage: tick <number of times>");
         }
@@ -89,7 +89,7 @@ namespace TestNeato
                 })
                 ;
 
-            api.UserInput("tick");
+            api.ConsumeUserInput("tick");
             api.NextErrorLine().Should().Be("Failed. Malformed command");
             api.NextErrorLine().Should().Be("Usage: tick");
         }

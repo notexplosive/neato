@@ -13,7 +13,7 @@ namespace TestNeato
         {
             // Intentionally call `ping` with bad args so we get an easy to expect result
 
-            var program = new ExternalProgram("ping");
+            var program = new ExternalProgram("ping", new BufferedLogger());
             var result = program.RunWithArgs(OutputLevel.Suppress, "10.0.0.1", "-i", "0");
 
             result.wasSuccessful.Should().BeTrue();
@@ -22,7 +22,7 @@ namespace TestNeato
         [Fact]
         public void fails_to_call_programs_that_do_not_exist()
         {
-            var program = new ExternalProgram("fjbnlazb");
+            var program = new ExternalProgram("fjbnlazb", new BufferedLogger());
             var result = program.RunWithArgs(OutputLevel.Allow);
 
             result.wasSuccessful.Should().Be(false);
@@ -31,7 +31,7 @@ namespace TestNeato
         [Fact]
         public void dotnet_is_installed()
         {
-            var program = new DotnetProgram();
+            var program = new DotnetProgram(new BufferedLogger());
             var result = program.Version();
 
             result.wasSuccessful.Should().Be(true);
@@ -40,7 +40,7 @@ namespace TestNeato
         [Fact]
         public void git_is_installed()
         {
-            var program = new GitProgram(".");
+            var program = new GitProgram(".", new BufferedLogger());
             var result = program.Version();
 
             result.wasSuccessful.Should().Be(true);
@@ -49,7 +49,7 @@ namespace TestNeato
         [Fact]
         public void sevenzip_is_installed()
         {
-            var program = new SevenZipProgram();
+            var program = new SevenZipProgram(new BufferedLogger());
             var result = program.Run();
 
             result.wasSuccessful.Should().Be(true);
@@ -58,7 +58,7 @@ namespace TestNeato
         [Fact]
         public void butler_is_installed()
         {
-            var program = new ButlerProgram();
+            var program = new ButlerProgram(new BufferedLogger());
             var result = program.Version();
 
             result.wasSuccessful.Should().Be(true);

@@ -10,7 +10,7 @@ namespace Neato
     {
         private readonly string workingDirectory;
 
-        public GitProgram(string workingDirectory) : base("git")
+        public GitProgram(string workingDirectory, Logger logger) : base("git", logger)
         {
             this.workingDirectory = workingDirectory;
         }

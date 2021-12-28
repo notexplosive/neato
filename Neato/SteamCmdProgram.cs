@@ -10,7 +10,7 @@ namespace Neato
 {
     public class SteamCmdProgram : ExternalProgram
     {
-        public SteamCmdProgram() : base("steamcmd")
+        public SteamCmdProgram(Logger logger) : base("steamcmd", logger)
         {
         }
 

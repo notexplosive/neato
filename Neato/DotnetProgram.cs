@@ -8,7 +8,7 @@ namespace Neato
 {
     public class DotnetProgram : ExternalProgram
     {
-        public DotnetProgram() : base("dotnet")
+        public DotnetProgram(Logger logger) : base("dotnet", logger)
         {
         }
 

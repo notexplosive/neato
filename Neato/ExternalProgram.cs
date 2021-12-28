@@ -24,10 +24,12 @@ namespace Neato
     public class ExternalProgram
     {
         private readonly string runPath;
+        private readonly Logger logger;
 
-        public ExternalProgram(string runPath)
+        public ExternalProgram(string runPath, Logger logger)
         {
             this.runPath = runPath;
+            this.logger = logger;
         }
 
         public ProgramOutput RunWithArgs(OutputLevel outputLevel, params string[] argumentList)
@@ -39,7 +41,7 @@ namespace Neato
         {
             if (outputLevel == OutputLevel.Allow)
             {
-                Logger.Info("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
+                this.logger.Info("ran command: " + this.runPath + (argumentList.Length > 0 ? " " : "") + string.Join(" ", argumentList)
                     + "\n" + "in working directory: " + workingDirectory);
             }
             var wasSuccessful = true;

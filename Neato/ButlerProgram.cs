@@ -8,7 +8,7 @@ namespace Neato
 {
     public class ButlerProgram : ExternalProgram
     {
-        public ButlerProgram() : base("butler")
+        public ButlerProgram(Logger logger) : base("butler", logger)
         {
         }
 
