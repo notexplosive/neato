@@ -59,5 +59,10 @@ namespace Neato
         {
             RunWithArgs(outputLevel, "sln", "add", path);
         }
+
+        public void NewSln(OutputLevel outputLevel)
+        {
+            RunWithArgs(outputLevel, "new", "sln");
+        }
     }
 }

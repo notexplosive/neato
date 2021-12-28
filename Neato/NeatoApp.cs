@@ -255,7 +255,7 @@ namespace Neato
                     dotnet.RunWithArgs(outputLevel, "new", "mgdesktopgl", "-o", projectName);
 
                     Logger.Info("Creating Solution");
-                    dotnet.RunWithArgs(outputLevel, "new", "sln");
+                    dotnet.NewSln(outputLevel);
 
                     Logger.Info("Add projects to Solution");
                     dotnet.AddToSln(outputLevel, projectName);
