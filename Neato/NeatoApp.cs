@@ -61,12 +61,16 @@ namespace Neato
                 {
                     var screenshotsFolder = new FileManager(PathType.Absolute, Path.GetFullPath(parameters[0].AsString()));
                     var destinationVideoLocation = Path.GetFullPath(parameters[1].AsString());
+                    var tempFolder = new FileManager(PathType.Absolute, Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
 
                     var ffmpeg = new FfmpegProgram(Logger);
 
-                    screenshotsFolder.WriteToFile(new PathContext(PathType.Relative, "concat.txt"), ffmpeg.GenerateConcatFromPngs(screenshotsFolder));
+                    Logger.Info($"Setting up temporary screenshot folder at {tempFolder.WorkingDirectory}");
+                    var tempScrenshotsList = ffmpeg.SetupTempScreenshotsFolder(screenshotsFolder, tempFolder);
+                    tempFolder.WriteToFile(new PathContext(PathType.Relative, "concat.txt"), ffmpeg.GenerateConcatFromPngs(tempScrenshotsList));
+                    Logger.Info("Writing concat file.");
 
-                    ffmpeg.RunWithArgsAt(screenshotsFolder.WorkingDirectory, ProgramOutputLevel.AllowProgramToEmitToConsole,
+                    ffmpeg.RunWithArgsAt(tempFolder.WorkingDirectory, ProgramOutputLevel.AllowProgramToEmitToConsole,
                         "-f", "concat",
                         "-i", "concat.txt",
                         "-preset", "slow",
@@ -75,6 +79,8 @@ namespace Neato
                         "-pix_fmt", "yuv420p",
                         "-crf", "18",
                         destinationVideoLocation);
+
+                    Logger.Info("Done.");
                 });
 
             Parser.RegisterCommand("login-itch")
@@ -257,16 +263,22 @@ namespace Neato
                     Logger.Info("Creating Solution");
                     dotnet.NewSln(outputLevel);
 
-                    Logger.Info("Add projects to Solution");
+                    Logger.Info("Add projects to Solution...");
                     dotnet.AddToSln(outputLevel, projectName);
                     var machinaLocalPath = Path.Join(".", "machina", "Machina");
+                    var machinaDesktopLocalPath = Path.Join(".", "machina", "MachinaDesktop");
+                    Logger.Info("...Machina");
                     dotnet.AddToSln(outputLevel, machinaLocalPath);
+                    Logger.Info("...MachinaDesktop");
+                    dotnet.AddToSln(outputLevel, machinaDesktopLocalPath);
+                    Logger.Info("...TestMachina");
                     dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "TestMachina"));
-                    dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "MachinaDesktop"));
-                    dotnet.AddToSln(outputLevel, Path.Join(".", "machina", "MachinaAndroid"));
 
-                    Logger.Info("Add Machina to Project");
+                    Logger.Info("Add project refs to Project...");
+                    Logger.Info("...Machina");
                     dotnet.RunWithArgs(outputLevel, "add", projectName, "reference", machinaLocalPath);
+                    Logger.Info("...MachinaDesktop");
+                    dotnet.RunWithArgs(outputLevel, "add", projectName, "reference", machinaDesktopLocalPath);
 
                     Logger.Info("Copying Files");
                     localFiles.Copy(

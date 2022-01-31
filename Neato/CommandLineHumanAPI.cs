@@ -19,9 +19,14 @@ namespace Neato
 
         public bool ConsumeUserInput(params string[] args)
         {
+#if DEBUG
+#else
             try
             {
-                this.parser.Consume(args);
+#endif
+            this.parser.Consume(args);
+#if DEBUG
+#else
             }
             catch (CommandFailedException e)
             {
@@ -50,6 +55,7 @@ namespace Neato
             {
                 this.error.Add($"Generic failure: {e.Message}");
             }
+#endif
 
             return true;
         }
